@@ -885,6 +885,12 @@ textarea {
   line-height: 1.75;
 }
 
+.booknook-catalog-preview-note {
+  margin: 1rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
 .booknook-catalog-empty {
   display: grid;
   min-height: 20rem;
@@ -947,6 +953,298 @@ textarea {
   color: var(--text-secondary);
   font-size: 0.9rem;
   line-height: 1.7;
+}
+
+.booknook-book-detail-page {
+  width: min(100% - 3rem, 76rem);
+  min-height: 65vh;
+  margin-inline: auto;
+  padding-block: 2rem 6rem;
+}
+
+.booknook-book-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+}
+
+.booknook-book-breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.booknook-book-breadcrumb a:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.booknook-book-preview-note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  border: 1px solid color-mix(in srgb, var(--secondary) 55%, var(--border));
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--secondary) 14%, var(--surface));
+  padding: 0.75rem 1rem;
+  color: var(--primary-dark);
+  font-size: 0.8125rem;
+  font-weight: 550;
+}
+
+.booknook-book-preview-note svg {
+  flex: 0 0 auto;
+  color: var(--primary);
+}
+
+.booknook-book-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(17rem, 0.82fr) minmax(0, 1.18fr);
+  align-items: center;
+  gap: clamp(2.5rem, 7vw, 6rem);
+  padding-block: 3.5rem 1rem;
+}
+
+.booknook-book-cover-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.booknook-book-detail-cover {
+  position: relative;
+  display: flex;
+  width: min(100%, 22rem);
+  aspect-ratio: 0.72;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--book-cover-accent, #d8b98a) 50%, #1c493d);
+  border-radius: 0.35rem 1rem 1rem 0.35rem;
+  background: var(
+    --book-cover-background,
+    linear-gradient(155deg, #2d6d5b, #173f36 76%)
+  );
+  padding: 2rem;
+  color: var(--book-cover-foreground, #fffaf0);
+  box-shadow:
+    1.25rem 1.5rem 2.5rem rgb(23 63 54 / 15%),
+    inset 0.5rem 0 0 rgb(0 0 0 / 10%);
+  text-align: center;
+}
+
+.booknook-book-detail-cover-border {
+  position: absolute;
+  inset: 1rem;
+  border: 1px solid color-mix(in srgb, var(--book-cover-accent, #d8b98a) 64%, transparent);
+  border-radius: 0.125rem 0.65rem 0.65rem 0.125rem;
+}
+
+.booknook-book-detail-cover-window {
+  position: absolute;
+  top: 13%;
+  right: 15%;
+  display: grid;
+  width: 35%;
+  aspect-ratio: 1;
+  grid-template: 1fr 1fr / 1fr 1fr;
+  gap: 0.25rem;
+  border: 0.35rem solid #f6f0e2;
+  background: #f6f0e2;
+  opacity: 0.78;
+}
+
+.booknook-book-detail-cover-window span {
+  background: #e3cda9;
+}
+
+.booknook-book-detail-cover-window span:nth-child(2),
+.booknook-book-detail-cover-window span:nth-child(3) {
+  background: #d7e1d8;
+}
+
+.booknook-book-detail-cover-orbit {
+  position: absolute;
+  top: 22%;
+  left: 12%;
+  width: 7rem;
+  aspect-ratio: 1;
+  border: 1px solid rgb(216 185 138 / 35%);
+  border-radius: 50%;
+}
+
+.booknook-book-detail-cover-mark {
+  position: relative;
+  margin-top: 2rem;
+  color: var(--book-cover-accent, var(--secondary));
+}
+
+.booknook-book-detail-cover-title {
+  position: relative;
+  max-width: 13rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.7rem, 3vw, 2.25rem);
+  line-height: 1.12;
+}
+
+.booknook-book-detail-cover-author {
+  position: relative;
+  color: color-mix(in srgb, var(--book-cover-foreground, #fffaf0) 82%, transparent);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.booknook-book-cover-caption {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 1rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+.booknook-book-cover-caption svg {
+  color: var(--primary);
+}
+
+.booknook-book-detail-content {
+  min-width: 0;
+  max-width: 39rem;
+}
+
+.booknook-book-preview-badge {
+  height: auto;
+  margin-bottom: 1.5rem;
+  border-color: color-mix(in srgb, var(--secondary) 60%, var(--border));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--secondary) 15%, var(--surface));
+  padding: 0.35rem 0.7rem;
+  color: var(--primary-dark);
+  font-size: 0.6875rem;
+  font-weight: 650;
+}
+
+.booknook-book-detail-content > .booknook-eyebrow {
+  margin-bottom: 0.6rem;
+}
+
+.booknook-book-detail-content h1 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: clamp(2.25rem, 4vw, 3.5rem);
+  font-weight: 650;
+  letter-spacing: -0.06em;
+  line-height: 1.05;
+}
+
+.booknook-book-detail-byline {
+  margin: 0.9rem 0 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.booknook-book-detail-byline span {
+  color: var(--primary);
+  font-weight: 650;
+}
+
+.booknook-book-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.booknook-book-detail-edition {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+.booknook-book-description-card {
+  margin-top: 1.75rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--surface);
+  padding: 1.25rem;
+}
+
+.booknook-book-detail-subheading {
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  font-weight: 650;
+}
+
+.booknook-book-detail-description {
+  margin-top: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.8;
+}
+
+.booknook-book-detail-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.booknook-book-detail-facts > div {
+  display: grid;
+  gap: 0.35rem;
+  align-content: start;
+  border-left: 2px solid color-mix(in srgb, var(--secondary) 70%, var(--border));
+  padding-left: 0.75rem;
+}
+
+.booknook-book-detail-facts > div > span {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+.booknook-book-detail-facts strong {
+  color: var(--text-primary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.booknook-book-availability {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--success) !important;
+}
+
+.booknook-book-borrow-action {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-top: 2rem;
+}
+
+.booknook-book-borrow-button {
+  min-width: 12rem;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.booknook-book-borrow-action > p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
 }
 
 .booknook-home-hero {
@@ -1479,6 +1777,7 @@ textarea {
   font-weight: 600;
 }
 
+.booknook-home-book-details h2,
 .booknook-home-book-details h3 {
   display: -webkit-box;
   overflow: hidden;
@@ -1495,6 +1794,10 @@ textarea {
   margin: 0.35rem 0 0;
   color: var(--text-secondary);
   font-size: 0.875rem;
+}
+
+.booknook-catalog .booknook-home-book-grid {
+  padding-bottom: 1rem;
 }
 
 .booknook-home-details-button {
@@ -1725,6 +2028,46 @@ textarea {
   .booknook-catalog-empty {
     min-height: 17rem;
     padding: 1.5rem;
+  }
+
+  .booknook-book-detail-page {
+    width: min(100% - 2rem, 76rem);
+    padding-block: 1.5rem 4rem;
+  }
+
+  .booknook-book-detail-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+    padding-top: 2rem;
+  }
+
+  .booknook-book-detail-cover {
+    width: min(76%, 19rem);
+  }
+
+  .booknook-book-detail-content {
+    max-width: none;
+  }
+
+  .booknook-book-preview-badge {
+    margin-bottom: 1rem;
+  }
+
+  .booknook-book-detail-content h1 {
+    font-size: clamp(2rem, 9vw, 2.75rem);
+  }
+
+  .booknook-book-description-card {
+    margin-top: 1.25rem;
+  }
+
+  .booknook-book-borrow-action {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .booknook-book-borrow-button {
+    width: 100%;
   }
 
   .booknook-home-hero-inner,

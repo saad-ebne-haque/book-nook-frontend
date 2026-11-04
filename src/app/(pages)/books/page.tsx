@@ -1,5 +1,8 @@
-import { Card } from "@heroui/react";
-import { BookOpen, LibraryBig, Sparkles } from "lucide-react";
+import { Badge } from "@heroui/react";
+import { Sparkles } from "lucide-react";
+import Link from "next/link";
+import PreviewBookCard from "@/components/books/PreviewBookCard";
+import { previewBooks } from "@/data/previewBooks";
 
 export default function AllBooksPage() {
   return (
@@ -14,22 +17,33 @@ export default function AllBooksPage() {
           Wander through stories, ideas, and new perspectives waiting to be
           discovered.
         </p>
+        <p className="booknook-catalog-preview-note">
+          These book listings are illustrative previews.
+        </p>
       </header>
 
-      <Card className="booknook-catalog-empty">
-        <Card.Content className="booknook-catalog-empty-content">
-          <span className="booknook-catalog-empty-icon" aria-hidden="true">
-            <LibraryBig size={28} strokeWidth={1.6} />
-            <BookOpen className="booknook-catalog-empty-book" size={17} />
-          </span>
-          <Card.Title className="booknook-catalog-empty-title">
-            Our shelves are being arranged
-          </Card.Title>
-          <Card.Description className="booknook-catalog-empty-description">
-            Book listings will appear here when catalog records are available.
-          </Card.Description>
-        </Card.Content>
-      </Card>
+      <div className="booknook-home-book-grid">
+        {previewBooks.map((book) => (
+          <PreviewBookCard
+            key={book.id}
+            book={book}
+            titleLevel="h2"
+            categoryBadge={
+              <Badge className="booknook-home-book-category" variant="soft">
+                {book.category}
+              </Badge>
+            }
+            action={
+              <Link
+                className="booknook-home-details-button"
+                href={`/books/${book.id}`}
+              >
+                View Details
+              </Link>
+            }
+          />
+        ))}
+      </div>
     </section>
   );
 }
