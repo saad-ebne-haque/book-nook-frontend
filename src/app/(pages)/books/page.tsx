@@ -1,8 +1,5 @@
-import { Badge } from "@heroui/react";
 import { Sparkles } from "lucide-react";
-import Link from "next/link";
-import PreviewBookCard from "@/components/books/PreviewBookCard";
-import { previewBooks } from "@/data/previewBooks";
+import PreviewBookCatalogFilters from "@/components/books/PreviewBookCatalogFilters";
 
 export default function AllBooksPage() {
   return (
@@ -22,28 +19,7 @@ export default function AllBooksPage() {
         </p>
       </header>
 
-      <div className="booknook-home-book-grid">
-        {previewBooks.map((book) => (
-          <PreviewBookCard
-            key={book.id}
-            book={book}
-            titleLevel="h2"
-            categoryBadge={
-              <Badge className="booknook-home-book-category" variant="soft">
-                {book.category}
-              </Badge>
-            }
-            action={
-              <Link
-                className="booknook-home-details-button"
-                href={`/books/${book.id}`}
-              >
-                View Details
-              </Link>
-            }
-          />
-        ))}
-      </div>
+      <PreviewBookCatalogFilters />
     </section>
   );
 }

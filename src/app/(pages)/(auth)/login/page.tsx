@@ -1,7 +1,11 @@
-import { Button, Input } from "@heroui/react";
+"use client";
+
+import { Button, FieldError, Form, Input, Label, TextField } from "@heroui/react";
 import {
   ArrowRight,
   BookOpen,
+  Eye,
+  EyeOff,
   KeyRound,
   LibraryBig,
   LockKeyhole,
@@ -9,8 +13,13 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { validatePassword } from "@/lib/auth-validation";
 
 export default function LoginPage() {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [passwordValue, setPasswordValue] = useState("");
+
   return (
     <section className="booknook-login-page" aria-labelledby="login-title">
       <div className="booknook-login-layout">
@@ -79,73 +88,110 @@ export default function LoginPage() {
               </p>
             </div>
 
-            <div className="booknook-login-fields">
-              <div className="booknook-login-field">
-                <label htmlFor="login-email">Email address</label>
-                <div className="booknook-login-input-wrap">
-                  <Mail size={18} aria-hidden="true" />
-                  <Input
-                    className="booknook-login-input"
-                    id="login-email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    placeholder="you@example.com"
-                    aria-label="Email address"
-                  />
+            <Form
+              className="booknook-auth-form"
+              validationBehavior="native"
+              onSubmit={(event) => event.preventDefault()}
+            >
+              <div className="booknook-login-fields">
+                <TextField className="booknook-login-field" isRequired>
+                  <Label htmlFor="login-email">Email address</Label>
+                  <div className="booknook-login-input-wrap">
+                    <Mail size={18} aria-hidden="true" />
+                    <Input
+                      className="booknook-login-input"
+                      id="login-email"
+                      name="email"
+                      type="email"
+                      pattern="[^@]+@[^@]+\.[^@]{2,}"
+                      autoComplete="email"
+                      placeholder="you@example.com"
+                      aria-label="Email address"
+                      title="Enter a valid email address, such as you@example.com."
+                    />
+                  </div>
+                  <FieldError className="booknook-login-error" />
+                </TextField>
+
+                <TextField
+                  className="booknook-login-field"
+                  isRequired
+                  validate={validatePassword}
+                  isInvalid={
+                    passwordValue ? Boolean(validatePassword(passwordValue)) : undefined
+                  }
+                >
+                  <Label htmlFor="login-password">Password</Label>
+                  <div className="booknook-login-input-wrap">
+                    <LockKeyhole size={18} aria-hidden="true" />
+                    <Input
+                      className="booknook-login-input"
+                      id="login-password"
+                      name="password"
+                      type={isPasswordVisible ? "text" : "password"}
+                      minLength={6}
+                      pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}"
+                      autoComplete="current-password"
+                      placeholder="Enter your password"
+                      aria-label="Password"
+                      aria-describedby="login-password-hint"
+                      title="Use at least 6 characters, including a lowercase letter, an uppercase letter, and a number."
+                      onChange={(event) => setPasswordValue(event.currentTarget.value)}
+                    />
+                    <button
+                      className="booknook-password-toggle"
+                      type="button"
+                      aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+                      aria-pressed={isPasswordVisible}
+                      onClick={() => setIsPasswordVisible((visible) => !visible)}
+                    >
+                      {isPasswordVisible ? (
+                        <EyeOff size={17} aria-hidden="true" />
+                      ) : (
+                        <Eye size={17} aria-hidden="true" />
+                      )}
+                    </button>
+                  </div>
+                  <p className="booknook-password-hint" id="login-password-hint">
+                    Use at least 6 characters, including a lowercase letter, an uppercase letter,
+                    and a number.
+                  </p>
+                  <FieldError className="booknook-login-error">
+                    {passwordValue ? validatePassword(passwordValue) : undefined}
+                  </FieldError>
+                </TextField>
+              </div>
+
+              <div className="booknook-login-actions">
+                <Button
+                  className="booknook-login-submit"
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                >
+                  Login
+                  <ArrowRight size={17} aria-hidden="true" />
+                </Button>
+
+                <div className="booknook-login-divider">
+                  <span>or continue with</span>
                 </div>
-              </div>
 
-              <div className="booknook-login-field">
-                <label htmlFor="login-password">Password</label>
-                <div className="booknook-login-input-wrap">
-                  <LockKeyhole size={18} aria-hidden="true" />
-                  <Input
-                    className="booknook-login-input"
-                    id="login-password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    placeholder="Enter your password"
-                    aria-label="Password"
+                <Button
+                  className="booknook-login-google"
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                >
+                  <span
+                    className="booknook-login-google-mark"
+                    role="img"
+                    aria-label="Google"
                   />
-                </div>
+                  Login with Google
+                </Button>
               </div>
-            </div>
-
-            <div className="booknook-login-forgot-row">
-              <span className="booknook-login-forgot">Forgot password?</span>
-            </div>
-
-            <div className="booknook-login-actions">
-              <Button
-                className="booknook-login-submit"
-                type="button"
-                variant="primary"
-                size="lg"
-              >
-                Login
-                <ArrowRight size={17} aria-hidden="true" />
-              </Button>
-
-              <div className="booknook-login-divider">
-                <span>or continue with</span>
-              </div>
-
-              <Button
-                className="booknook-login-google"
-                type="button"
-                variant="outline"
-                size="lg"
-              >
-                <span
-                  className="booknook-login-google-mark"
-                  role="img"
-                  aria-label="Google"
-                />
-                Login with Google
-              </Button>
-            </div>
+            </Form>
 
             <p className="booknook-login-register">
               New to BookNook? <Link href="/register">Create an account</Link>

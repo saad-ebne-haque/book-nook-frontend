@@ -1,8 +1,16 @@
 import { Badge, Card } from "@heroui/react";
-import { ArrowLeft, BookOpen, Check, ChevronRight, Sparkles } from "lucide-react";
+import {
+  ArrowLeft,
+  BookOpen,
+  Check,
+  ChevronRight,
+  Sparkles,
+  Star,
+} from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import BorrowConfirmationModalPreview from "@/components/books/BorrowConfirmationModalPreview";
+import PreviewBookCover from "@/components/books/PreviewBookCover";
 import { previewBooks } from "@/data/previewBooks";
 
 export function generateStaticParams() {
@@ -37,40 +45,20 @@ export default async function BookDetailsPage({
 
       <div className="booknook-book-detail-layout">
         <div className="booknook-book-cover-column">
-          <div
-            className={`booknook-book-detail-cover booknook-home-cover-${book.cover}`}
-            role="img"
-            aria-label={`Illustrative cover artwork for ${book.title} by ${book.author}`}
-          >
-            <div className="booknook-book-detail-cover-window" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-              <span />
-            </div>
-            <span className="booknook-book-detail-cover-orbit" aria-hidden="true" />
-            <span className="booknook-book-detail-cover-border" aria-hidden="true" />
-            <BookOpen
-              className="booknook-book-detail-cover-mark"
-              size={42}
-              strokeWidth={1.35}
-              aria-hidden="true"
+          <div className="booknook-book-detail-cover">
+            <PreviewBookCover
+              book={book}
+              preload
+              sizes="(max-width: 45rem) 76vw, 22rem"
             />
-            <span className="booknook-book-detail-cover-title">
-              {book.title}
-            </span>
-            <span className="booknook-book-detail-cover-author">{book.author}</span>
           </div>
           <p className="booknook-book-cover-caption">
             <BookOpen size={15} aria-hidden="true" />
-            Cover artwork shown for preview
+            Book cover
           </p>
         </div>
 
         <div className="booknook-book-detail-content">
-          <Badge className="booknook-book-preview-badge" variant="soft">
-            Illustrative book preview
-          </Badge>
           <p className="booknook-eyebrow">A story to settle into</p>
           <h1>{book.title}</h1>
           <p className="booknook-book-detail-byline">
@@ -81,7 +69,17 @@ export default async function BookDetailsPage({
             <Badge className="booknook-home-book-category" variant="soft">
               {book.category}
             </Badge>
-            <span className="booknook-book-detail-edition">Sample listing</span>
+            <span className="booknook-book-detail-edition">
+              {book.language} · {book.publishedYear}
+            </span>
+          </div>
+
+          <div
+            className="booknook-home-book-rating"
+            aria-label={`Rated ${book.rating.toFixed(1)} out of 5`}
+          >
+            <Star size={15} fill="currentColor" aria-hidden="true" />
+            <span>{book.rating.toFixed(1)}</span>
           </div>
 
           <Card className="booknook-book-description-card">
@@ -97,15 +95,35 @@ export default async function BookDetailsPage({
 
           <div className="booknook-book-detail-facts">
             <div>
-              <span>Added by</span>
-              <strong>BookNook preview member</strong>
+              <span>Published</span>
+              <strong>{book.publishedYear}</strong>
+            </div>
+            <div>
+              <span>Language</span>
+              <strong>{book.language}</strong>
+            </div>
+            <div>
+              <span>ISBN</span>
+              <strong>{book.isbn}</strong>
             </div>
             <div>
               <span>Availability</span>
-              <strong className="booknook-book-availability">
-                <Check size={16} aria-hidden="true" />
-                {book.availableCopies} sample{" "}
-                {book.availableCopies === 1 ? "copy" : "copies"} available
+              <strong
+                className={
+                  book.availableCopies > 0
+                    ? "booknook-book-availability"
+                    : "booknook-book-unavailable"
+                }
+              >
+                {book.availableCopies > 0 ? (
+                  <>
+                    <Check size={16} aria-hidden="true" />
+                    {book.availableCopies}{" "}
+                    {book.availableCopies === 1 ? "copy" : "copies"} available
+                  </>
+                ) : (
+                  "Currently unavailable"
+                )}
               </strong>
             </div>
           </div>

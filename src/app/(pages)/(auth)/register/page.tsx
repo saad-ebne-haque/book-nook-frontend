@@ -1,7 +1,11 @@
-import { Button, Input } from "@heroui/react";
+"use client";
+
+import { Button, FieldError, Form, Input, Label, TextField } from "@heroui/react";
 import {
   ArrowRight,
   BookOpen,
+  Eye,
+  EyeOff,
   Image as ImageIcon,
   LibraryBig,
   LockKeyhole,
@@ -10,8 +14,13 @@ import {
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { validatePassword } from "@/lib/auth-validation";
 
 export default function RegisterPage() {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [passwordValue, setPasswordValue] = useState("");
+
   return (
     <section
       className="booknook-login-page booknook-register-page"
@@ -83,101 +92,144 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            <div className="booknook-login-fields booknook-register-fields">
-              <div className="booknook-login-field">
-                <label htmlFor="register-name">Full name</label>
-                <div className="booknook-login-input-wrap">
-                  <UserRound size={18} aria-hidden="true" />
-                  <Input
-                    className="booknook-login-input"
-                    id="register-name"
-                    name="name"
-                    type="text"
-                    autoComplete="name"
-                    placeholder="Your full name"
-                    aria-label="Full name"
-                  />
+            <Form
+              className="booknook-auth-form"
+              validationBehavior="native"
+              onSubmit={(event) => event.preventDefault()}
+            >
+              <div className="booknook-login-fields booknook-register-fields">
+                <TextField className="booknook-login-field" isRequired>
+                  <Label htmlFor="register-name">Full name</Label>
+                  <div className="booknook-login-input-wrap">
+                    <UserRound size={18} aria-hidden="true" />
+                    <Input
+                      className="booknook-login-input"
+                      id="register-name"
+                      name="name"
+                      type="text"
+                      autoComplete="name"
+                      placeholder="Your full name"
+                      aria-label="Full name"
+                    />
+                  </div>
+                  <FieldError className="booknook-login-error" />
+                </TextField>
+
+                <TextField className="booknook-login-field" isRequired>
+                  <Label htmlFor="register-email">Email address</Label>
+                  <div className="booknook-login-input-wrap">
+                    <Mail size={18} aria-hidden="true" />
+                    <Input
+                      className="booknook-login-input"
+                      id="register-email"
+                      name="email"
+                      type="email"
+                      pattern="[^@]+@[^@]+\.[^@]{2,}"
+                      autoComplete="email"
+                      placeholder="you@example.com"
+                      aria-label="Email address"
+                      title="Enter a valid email address, such as you@example.com."
+                    />
+                  </div>
+                  <FieldError className="booknook-login-error" />
+                </TextField>
+
+                <TextField className="booknook-login-field">
+                  <Label htmlFor="register-photo">Photo URL</Label>
+                  <div className="booknook-login-input-wrap">
+                    <ImageIcon size={18} aria-hidden="true" />
+                    <Input
+                      className="booknook-login-input"
+                      id="register-photo"
+                      name="photoURL"
+                      type="url"
+                      autoComplete="url"
+                      placeholder="https://example.com/photo.jpg"
+                      aria-label="Photo URL"
+                    />
+                  </div>
+                  <FieldError className="booknook-login-error" />
+                </TextField>
+
+                <TextField
+                  className="booknook-login-field"
+                  isRequired
+                  validate={validatePassword}
+                  isInvalid={
+                    passwordValue ? Boolean(validatePassword(passwordValue)) : undefined
+                  }
+                >
+                  <Label htmlFor="register-password">Password</Label>
+                  <div className="booknook-login-input-wrap">
+                    <LockKeyhole size={18} aria-hidden="true" />
+                    <Input
+                      className="booknook-login-input"
+                      id="register-password"
+                      name="password"
+                      type={isPasswordVisible ? "text" : "password"}
+                      minLength={6}
+                      pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{6,}"
+                      autoComplete="new-password"
+                      placeholder="Create a password"
+                      aria-label="Password"
+                      aria-describedby="register-password-hint"
+                      title="Use at least 6 characters, including a lowercase letter, an uppercase letter, and a number."
+                      onChange={(event) => setPasswordValue(event.currentTarget.value)}
+                    />
+                    <button
+                      className="booknook-password-toggle"
+                      type="button"
+                      aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+                      aria-pressed={isPasswordVisible}
+                      onClick={() => setIsPasswordVisible((visible) => !visible)}
+                    >
+                      {isPasswordVisible ? (
+                        <EyeOff size={17} aria-hidden="true" />
+                      ) : (
+                        <Eye size={17} aria-hidden="true" />
+                      )}
+                    </button>
+                  </div>
+                  <p className="booknook-password-hint" id="register-password-hint">
+                    Use at least 6 characters, including a lowercase letter, an uppercase letter,
+                    and a number.
+                  </p>
+                  <FieldError className="booknook-login-error">
+                    {passwordValue ? validatePassword(passwordValue) : undefined}
+                  </FieldError>
+                </TextField>
+              </div>
+
+              <div className="booknook-login-actions booknook-register-actions">
+                <Button
+                  className="booknook-login-submit"
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                >
+                  Create Account
+                  <ArrowRight size={17} aria-hidden="true" />
+                </Button>
+
+                <div className="booknook-login-divider">
+                  <span>or sign up with</span>
                 </div>
-              </div>
 
-              <div className="booknook-login-field">
-                <label htmlFor="register-email">Email address</label>
-                <div className="booknook-login-input-wrap">
-                  <Mail size={18} aria-hidden="true" />
-                  <Input
-                    className="booknook-login-input"
-                    id="register-email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    placeholder="you@example.com"
-                    aria-label="Email address"
+                <Button
+                  className="booknook-login-google"
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                >
+                  <span
+                    className="booknook-login-google-mark"
+                    role="img"
+                    aria-label="Google"
                   />
-                </div>
+                  Sign up with Google
+                </Button>
               </div>
-
-              <div className="booknook-login-field">
-                <label htmlFor="register-photo">Photo URL</label>
-                <div className="booknook-login-input-wrap">
-                  <ImageIcon size={18} aria-hidden="true" />
-                  <Input
-                    className="booknook-login-input"
-                    id="register-photo"
-                    name="photoURL"
-                    type="url"
-                    autoComplete="url"
-                    placeholder="https://example.com/photo.jpg"
-                    aria-label="Photo URL"
-                  />
-                </div>
-              </div>
-
-              <div className="booknook-login-field">
-                <label htmlFor="register-password">Password</label>
-                <div className="booknook-login-input-wrap">
-                  <LockKeyhole size={18} aria-hidden="true" />
-                  <Input
-                    className="booknook-login-input"
-                    id="register-password"
-                    name="password"
-                    type="password"
-                    autoComplete="new-password"
-                    placeholder="Create a password"
-                    aria-label="Password"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="booknook-login-actions booknook-register-actions">
-              <Button
-                className="booknook-login-submit"
-                type="button"
-                variant="primary"
-                size="lg"
-              >
-                Create Account
-                <ArrowRight size={17} aria-hidden="true" />
-              </Button>
-
-              <div className="booknook-login-divider">
-                <span>or sign up with</span>
-              </div>
-
-              <Button
-                className="booknook-login-google"
-                type="button"
-                variant="outline"
-                size="lg"
-              >
-                <span
-                  className="booknook-login-google-mark"
-                  role="img"
-                  aria-label="Google"
-                />
-                Sign up with Google
-              </Button>
-            </div>
+            </Form>
 
             <p className="booknook-login-register">
               Already have an account? <Link href="/login">Log in</Link>

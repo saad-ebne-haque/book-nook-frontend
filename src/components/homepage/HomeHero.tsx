@@ -1,7 +1,10 @@
 import { ArrowRight, BookOpen, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { previewBooks } from "@/data/previewBooks";
 
 export default function HomeHero() {
+  const featuredBook = previewBooks[0];
+
   return (
     <section className="booknook-home-hero" aria-labelledby="home-hero-title">
       <div className="booknook-home-hero-inner">
@@ -68,11 +71,7 @@ export default function HomeHero() {
             aria-hidden="true"
           >
             <BookOpen size={30} strokeWidth={1.5} />
-            <span>
-              A BOOK OF
-              <br />
-              SMALL WONDERS
-            </span>
+            <span>{featuredBook?.title ?? "Explore the shelf"}</span>
           </div>
           <div className="booknook-home-art-shelf" aria-hidden="true" />
           <div className="booknook-home-art-caption" aria-hidden="true">

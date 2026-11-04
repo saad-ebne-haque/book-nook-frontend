@@ -8,19 +8,7 @@ import {
   Mail,
   UserRound,
 } from "lucide-react";
-
-const categories = [
-  "Fiction",
-  "Non-fiction",
-  "Mystery",
-  "Fantasy",
-  "Science Fiction",
-  "Romance",
-  "Biography",
-  "History",
-  "Children's",
-  "Other",
-];
+import { previewBookCategories } from "@/data/previewBooks";
 
 export default function AddBookPage() {
   return (
@@ -85,7 +73,7 @@ export default function AddBookPage() {
               </Select.Trigger>
               <Select.Popover className="booknook-add-book-select-popover">
                 <ListBox>
-                  {categories.map((category) => (
+                  {previewBookCategories.map((category) => (
                     <ListBox.Item key={category} id={category} textValue={category}>
                       {category}
                     </ListBox.Item>

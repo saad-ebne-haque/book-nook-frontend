@@ -47,20 +47,6 @@ export default function NavbarUserMenu({ user }: { user: NavbarUser }) {
               My Profile
             </Dropdown.Item>
             <Dropdown.Item
-              id="my-books"
-              href="/my-books"
-              className="booknook-navbar-profile-menu-item"
-            >
-              My Books
-            </Dropdown.Item>
-            <Dropdown.Item
-              id="my-borrows"
-              href="/my-borrows"
-              className="booknook-navbar-profile-menu-item"
-            >
-              My Borrows
-            </Dropdown.Item>
-            <Dropdown.Item
               id="logout"
               variant="danger"
               className="booknook-navbar-profile-menu-item booknook-navbar-logout"

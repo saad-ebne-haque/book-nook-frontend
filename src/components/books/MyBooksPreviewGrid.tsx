@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge, Button } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import EditBookModalPreview from "@/components/books/EditBookModalPreview";
@@ -24,11 +24,6 @@ export default function MyBooksPreviewGrid({
             key={book.id}
             book={book}
             titleLevel="h2"
-            categoryBadge={
-              <Badge className="booknook-home-book-category" variant="soft">
-                {book.category}
-              </Badge>
-            }
             action={
               <div className="booknook-my-books-actions">
                 <Button

@@ -15,20 +15,10 @@ import {
   LockKeyhole,
   Pencil,
 } from "lucide-react";
-import type { PreviewBook } from "@/data/previewBooks";
-
-const categories = [
-  "Fiction",
-  "Non-fiction",
-  "Mystery",
-  "Fantasy",
-  "Science Fiction",
-  "Romance",
-  "Biography",
-  "History",
-  "Children's",
-  "Other",
-];
+import {
+  previewBookCategories,
+  type PreviewBook,
+} from "@/data/previewBooks";
 
 type EditBookModalPreviewProps = {
   book: PreviewBook | null;
@@ -123,7 +113,7 @@ export default function EditBookModalPreview({
                       </Select.Trigger>
                       <Select.Popover className="booknook-add-book-select-popover">
                         <ListBox>
-                          {categories.map((category) => (
+                          {previewBookCategories.map((category) => (
                             <ListBox.Item
                               key={category}
                               id={category}
@@ -144,7 +134,7 @@ export default function EditBookModalPreview({
                       <Input
                         className="booknook-add-book-input"
                         id="edit-preview-image"
-                        placeholder="Preview has no image URL"
+                        value={book.cover}
                         readOnly
                         aria-label="Book image URL"
                       />
@@ -162,6 +152,61 @@ export default function EditBookModalPreview({
                       rows={4}
                       readOnly
                       aria-label="Description"
+                    />
+                  </div>
+
+                  <div className="booknook-add-book-field">
+                    <Label htmlFor="edit-preview-isbn">ISBN</Label>
+                    <Input
+                      className="booknook-add-book-input"
+                      id="edit-preview-isbn"
+                      value={book.isbn}
+                      readOnly
+                      aria-label="ISBN"
+                    />
+                  </div>
+
+                  <div className="booknook-add-book-field">
+                    <Label htmlFor="edit-preview-language">Language</Label>
+                    <Input
+                      className="booknook-add-book-input"
+                      id="edit-preview-language"
+                      value={book.language}
+                      readOnly
+                      aria-label="Language"
+                    />
+                  </div>
+
+                  <div className="booknook-add-book-field">
+                    <Label htmlFor="edit-preview-year">Published year</Label>
+                    <Input
+                      className="booknook-add-book-input"
+                      id="edit-preview-year"
+                      value={String(book.publishedYear)}
+                      readOnly
+                      aria-label="Published year"
+                    />
+                  </div>
+
+                  <div className="booknook-add-book-field">
+                    <Label htmlFor="edit-preview-copies">Available copies</Label>
+                    <Input
+                      className="booknook-add-book-input"
+                      id="edit-preview-copies"
+                      value={String(book.availableCopies)}
+                      readOnly
+                      aria-label="Available copies"
+                    />
+                  </div>
+
+                  <div className="booknook-add-book-field">
+                    <Label htmlFor="edit-preview-rating">Rating</Label>
+                    <Input
+                      className="booknook-add-book-input"
+                      id="edit-preview-rating"
+                      value={book.rating.toFixed(1)}
+                      readOnly
+                      aria-label="Rating"
                     />
                   </div>
                 </div>
