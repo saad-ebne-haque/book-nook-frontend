@@ -1,7 +1,8 @@
-import { Badge, Button, Card } from "@heroui/react";
+import { Badge, Card } from "@heroui/react";
 import { ArrowLeft, BookOpen, Check, ChevronRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import BorrowConfirmationModalPreview from "@/components/books/BorrowConfirmationModalPreview";
 import { previewBooks } from "@/data/previewBooks";
 
 export function generateStaticParams() {
@@ -110,16 +111,8 @@ export default async function BookDetailsPage({
           </div>
 
           <div className="booknook-book-borrow-action">
-            <Button
-              className="booknook-book-borrow-button"
-              isDisabled
-              type="button"
-              variant="primary"
-              size="lg"
-            >
-              Borrow This Book
-            </Button>
-            <p>Borrowing is unavailable in this visual preview.</p>
+            <BorrowConfirmationModalPreview book={book} />
+            <p>Preview only — no borrow request will be submitted.</p>
           </div>
         </div>
       </div>
