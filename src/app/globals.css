@@ -4116,6 +4116,160 @@ textarea {
   line-height: 1.7;
 }
 
+.booknook-not-found {
+  display: grid;
+  min-height: min(76vh, 54rem);
+  place-items: center;
+  padding: 3rem 1.5rem 5rem;
+  text-align: center;
+}
+
+.booknook-not-found-content {
+  display: flex;
+  width: min(100%, 38rem);
+  flex-direction: column;
+  align-items: center;
+}
+
+.booknook-not-found-illustration {
+  position: relative;
+  display: grid;
+  width: min(100%, 22rem);
+  height: 17rem;
+  place-items: center;
+  margin-bottom: 1rem;
+  isolation: isolate;
+}
+
+.booknook-not-found-orbit {
+  position: absolute;
+  z-index: -1;
+  border: 1px solid color-mix(in srgb, var(--secondary) 45%, transparent);
+  border-radius: 50%;
+}
+
+.booknook-not-found-orbit-one {
+  width: 14rem;
+  height: 14rem;
+}
+
+.booknook-not-found-orbit-two {
+  width: 18rem;
+  height: 18rem;
+  border-style: dashed;
+  opacity: 0.65;
+}
+
+.booknook-not-found-open-book {
+  position: absolute;
+  top: 3.2rem;
+  display: grid;
+  width: 6rem;
+  height: 5.25rem;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--secondary) 65%, var(--border));
+  border-radius: 1.125rem;
+  background: #f0f5f2;
+  color: var(--primary);
+  box-shadow: 0 14px 36px rgb(23 63 54 / 10%);
+  transform: rotate(-7deg);
+}
+
+.booknook-not-found-sparkle {
+  position: absolute;
+  top: 2rem;
+  right: 5rem;
+  color: #b28b52;
+}
+
+.booknook-not-found-books {
+  position: absolute;
+  right: 50%;
+  bottom: 3.1rem;
+  display: flex;
+  height: 3.5rem;
+  align-items: flex-end;
+  gap: 0.3rem;
+  transform: translateX(50%);
+}
+
+.booknook-not-found-books span {
+  width: 1.35rem;
+  border: 1px solid rgb(255 255 255 / 35%);
+  border-radius: 0.3rem 0.3rem 0.15rem 0.15rem;
+  background: var(--primary-dark);
+  box-shadow: 0 5px 12px rgb(23 63 54 / 12%);
+}
+
+.booknook-not-found-books span:nth-child(1) {
+  height: 2.8rem;
+  background: #a77c4a;
+  transform: rotate(-6deg);
+}
+
+.booknook-not-found-books span:nth-child(2) {
+  height: 3.4rem;
+}
+
+.booknook-not-found-books span:nth-child(3) {
+  height: 2.55rem;
+  background: #82988a;
+  transform: rotate(6deg);
+}
+
+.booknook-not-found-page-mark {
+  position: absolute;
+  right: 1.8rem;
+  bottom: 2.25rem;
+  color: color-mix(in srgb, var(--primary) 12%, transparent);
+  font-size: 2.5rem;
+  font-weight: 750;
+  letter-spacing: -0.08em;
+}
+
+.booknook-not-found-content > .booknook-eyebrow {
+  margin: 0 0 0.625rem;
+}
+
+.booknook-not-found-content h1 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 680;
+  letter-spacing: -0.06em;
+  line-height: 1.12;
+}
+
+.booknook-not-found-description {
+  max-width: 31rem;
+  margin: 1rem 0 1.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.75;
+}
+
+.booknook-not-found-home {
+  min-height: 2.875rem;
+  gap: 0.55rem;
+  border-radius: 0.75rem;
+  background: var(--primary);
+  padding-inline: 1.125rem;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.booknook-not-found-home:hover,
+.booknook-not-found-home[data-hovered="true"] {
+  background: var(--primary-hover);
+}
+
+.booknook-not-found-home:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
 @media (max-width: 45rem) {
   .booknook-profile-page {
     width: min(100% - 2rem, 72rem);
@@ -4153,5 +4307,58 @@ textarea {
 
   .booknook-profile-note {
     padding: 1rem;
+  }
+
+  .booknook-not-found {
+    min-height: 70vh;
+    padding: 2.25rem 1rem 4rem;
+  }
+
+  .booknook-not-found-illustration {
+    height: 14rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .booknook-not-found-orbit-one {
+    width: 11rem;
+    height: 11rem;
+  }
+
+  .booknook-not-found-orbit-two {
+    width: 14.5rem;
+    height: 14.5rem;
+  }
+
+  .booknook-not-found-open-book {
+    top: 2.5rem;
+    width: 5.25rem;
+    height: 4.75rem;
+  }
+
+  .booknook-not-found-open-book svg {
+    width: 3.25rem;
+  }
+
+  .booknook-not-found-sparkle {
+    top: 1.5rem;
+    right: 3rem;
+  }
+
+  .booknook-not-found-books {
+    bottom: 2.5rem;
+  }
+
+  .booknook-not-found-page-mark {
+    right: 0.75rem;
+    bottom: 1.75rem;
+    font-size: 2rem;
+  }
+
+  .booknook-not-found-content h1 {
+    max-width: 20rem;
+  }
+
+  .booknook-not-found-description {
+    font-size: 0.875rem;
   }
 }
