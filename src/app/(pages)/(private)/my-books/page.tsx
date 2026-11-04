@@ -1,7 +1,6 @@
-import { Badge, Button } from "@heroui/react";
-import { ArrowRight, LibraryBig, Pencil, Plus, Trash2 } from "lucide-react";
+import { ArrowRight, LibraryBig, Plus } from "lucide-react";
 import Link from "next/link";
-import PreviewBookCard from "@/components/books/PreviewBookCard";
+import MyBooksPreviewGrid from "@/components/books/MyBooksPreviewGrid";
 import { previewBooks } from "@/data/previewBooks";
 
 export default function MyBooksPage() {
@@ -32,44 +31,7 @@ export default function MyBooksPage() {
         </Link>
       </div>
 
-      <div className="booknook-home-book-grid booknook-my-books-grid">
-        {myBooksPreview.map((book) => (
-          <PreviewBookCard
-            key={book.id}
-            book={book}
-            titleLevel="h2"
-            categoryBadge={
-              <Badge className="booknook-home-book-category" variant="soft">
-                {book.category}
-              </Badge>
-            }
-            action={
-              <div className="booknook-my-books-actions">
-                <Button
-                  aria-label={`Edit ${book.title}`}
-                  className="booknook-my-books-edit"
-                  size="sm"
-                  type="button"
-                  variant="outline"
-                >
-                  <Pencil size={15} aria-hidden="true" />
-                  Edit
-                </Button>
-                <Button
-                  aria-label={`Delete ${book.title}`}
-                  className="booknook-my-books-delete"
-                  size="sm"
-                  type="button"
-                  variant="danger-soft"
-                >
-                  <Trash2 size={15} aria-hidden="true" />
-                  Delete
-                </Button>
-              </div>
-            }
-          />
-        ))}
-      </div>
+      <MyBooksPreviewGrid books={myBooksPreview} />
     </section>
   );
 }
