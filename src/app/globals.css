@@ -2557,6 +2557,139 @@ textarea {
     width: 100%;
     justify-content: center;
   }
+}
+
+.booknook-my-books {
+  width: min(100% - 3rem, 76rem);
+  min-height: 65vh;
+  margin-inline: auto;
+  padding-block: 4.5rem 6rem;
+}
+
+.booknook-my-books-heading {
+  max-width: 42rem;
+  margin-bottom: 2.5rem;
+}
+
+.booknook-my-books-heading .booknook-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.booknook-my-books-heading h1 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 650;
+  letter-spacing: -0.06em;
+  line-height: 1.08;
+}
+
+.booknook-my-books-heading > p:last-child {
+  max-width: 35rem;
+  margin: 1rem 0 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.booknook-my-books-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.booknook-my-books-preview-note {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.booknook-my-books-actions {
+  display: flex;
+  gap: 0.625rem;
+  margin-top: 1rem;
+}
+
+.booknook-my-books-actions .button {
+  min-width: 0;
+  flex: 1;
+  justify-content: center;
+  gap: 0.4rem;
+  padding-inline: 0.625rem;
+  font-size: 0.8125rem;
+}
+
+.booknook-my-books-edit {
+  border-color: color-mix(in srgb, var(--primary) 24%, var(--border));
+  color: var(--primary-dark);
+}
+
+.booknook-my-books-edit:hover {
+  background: #f0f5f2;
+}
+
+.booknook-my-books-delete {
+  border-color: color-mix(in srgb, var(--danger) 20%, var(--border));
+}
+
+.booknook-my-books-add-link {
+  display: inline-flex;
+  min-height: 2.875rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  margin-top: 1.5rem;
+  border-radius: 0.75rem;
+  background: var(--primary);
+  padding: 0.75rem 1rem;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.booknook-my-books-add-link:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.booknook-my-books-add-link:active {
+  background: var(--primary-active);
+  transform: translateY(0);
+}
+
+.booknook-my-books-add-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+@media (max-width: 45rem) {
+  .booknook-my-books {
+    width: min(100% - 2rem, 76rem);
+    padding-block: 3rem 4rem;
+  }
+
+  .booknook-my-books-heading {
+    margin-bottom: 2rem;
+  }
+
+  .booknook-my-books-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .booknook-my-books-add-link {
+    margin-top: 0;
+  }
 
   .booknook-home-art-book-front {
     right: 25%;
