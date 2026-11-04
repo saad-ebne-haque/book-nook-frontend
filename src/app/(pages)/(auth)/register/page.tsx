@@ -1,14 +1,190 @@
+import { Button, Input } from "@heroui/react";
+import {
+  ArrowRight,
+  BookOpen,
+  Image as ImageIcon,
+  LibraryBig,
+  LockKeyhole,
+  Mail,
+  Sparkles,
+  UserRound,
+} from "lucide-react";
+import Link from "next/link";
 
-const RegisterPage = () => {
+export default function RegisterPage() {
+  return (
+    <section
+      className="booknook-login-page booknook-register-page"
+      aria-labelledby="register-title"
+    >
+      <div className="booknook-login-layout">
+        <div
+          className="booknook-login-visual"
+          role="img"
+          aria-label="A cozy library with shelves of books and a quiet reading nook"
+        >
+          <div className="booknook-login-visual-top">
+            <span className="booknook-login-mark">
+              <BookOpen size={22} aria-hidden="true" />
+            </span>
+            <span>BOOKNOOK READING ROOM</span>
+          </div>
 
+          <div className="booknook-login-library" aria-hidden="true">
+            <div className="booknook-login-library-window">
+              <span />
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="booknook-login-shelf booknook-login-shelf-top">
+              <i />
+              <i />
+              <i />
+              <i />
+              <i />
+            </div>
+            <div className="booknook-login-shelf booknook-login-shelf-bottom">
+              <i />
+              <i />
+              <i />
+              <i />
+              <i />
+              <i />
+            </div>
+            <div className="booknook-login-reading-book">
+              <BookOpen size={62} strokeWidth={1.2} />
+            </div>
+            <div className="booknook-login-library-plant">
+              <span />
+              <span />
+              <span />
+              <i />
+            </div>
+          </div>
 
+          <div className="booknook-login-visual-copy">
+            <Sparkles size={17} aria-hidden="true" />
+            <p>A new chapter starts with a story you can call your own.</p>
+            <span>Make yourself at home among the books.</span>
+          </div>
+        </div>
 
-    return (
-        <>
+        <div className="booknook-login-form-panel">
+          <div className="booknook-login-form-wrap">
+            <div className="booknook-login-heading">
+              <span className="booknook-login-heading-icon">
+                <LibraryBig size={21} aria-hidden="true" />
+              </span>
+              <p className="booknook-eyebrow">Join the reading room</p>
+              <h1 id="register-title">Create Your Account</h1>
+              <p>
+                Build your personal library and find a little more to read.
+              </p>
+            </div>
 
+            <div className="booknook-login-fields booknook-register-fields">
+              <div className="booknook-login-field">
+                <label htmlFor="register-name">Full name</label>
+                <div className="booknook-login-input-wrap">
+                  <UserRound size={18} aria-hidden="true" />
+                  <Input
+                    className="booknook-login-input"
+                    id="register-name"
+                    name="name"
+                    type="text"
+                    autoComplete="name"
+                    placeholder="Your full name"
+                    aria-label="Full name"
+                  />
+                </div>
+              </div>
 
-        </>
-    );
-};
+              <div className="booknook-login-field">
+                <label htmlFor="register-email">Email address</label>
+                <div className="booknook-login-input-wrap">
+                  <Mail size={18} aria-hidden="true" />
+                  <Input
+                    className="booknook-login-input"
+                    id="register-email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    aria-label="Email address"
+                  />
+                </div>
+              </div>
 
-export default RegisterPage;
+              <div className="booknook-login-field">
+                <label htmlFor="register-photo">Photo URL</label>
+                <div className="booknook-login-input-wrap">
+                  <ImageIcon size={18} aria-hidden="true" />
+                  <Input
+                    className="booknook-login-input"
+                    id="register-photo"
+                    name="photoURL"
+                    type="url"
+                    autoComplete="url"
+                    placeholder="https://example.com/photo.jpg"
+                    aria-label="Photo URL"
+                  />
+                </div>
+              </div>
+
+              <div className="booknook-login-field">
+                <label htmlFor="register-password">Password</label>
+                <div className="booknook-login-input-wrap">
+                  <LockKeyhole size={18} aria-hidden="true" />
+                  <Input
+                    className="booknook-login-input"
+                    id="register-password"
+                    name="password"
+                    type="password"
+                    autoComplete="new-password"
+                    placeholder="Create a password"
+                    aria-label="Password"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="booknook-login-actions booknook-register-actions">
+              <Button
+                className="booknook-login-submit"
+                type="button"
+                variant="primary"
+                size="lg"
+              >
+                Create Account
+                <ArrowRight size={17} aria-hidden="true" />
+              </Button>
+
+              <div className="booknook-login-divider">
+                <span>or sign up with</span>
+              </div>
+
+              <Button
+                className="booknook-login-google"
+                type="button"
+                variant="outline"
+                size="lg"
+              >
+                <span
+                  className="booknook-login-google-mark"
+                  role="img"
+                  aria-label="Google"
+                />
+                Sign up with Google
+              </Button>
+            </div>
+
+            <p className="booknook-login-register">
+              Already have an account? <Link href="/login">Log in</Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
