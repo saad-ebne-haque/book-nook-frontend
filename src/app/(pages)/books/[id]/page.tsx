@@ -14,8 +14,9 @@ import type { Metadata } from "next";
 import BorrowConfirmationModalPreview from "@/components/books/BorrowConfirmationModalPreview";
 import PreviewBookCover from "@/components/books/PreviewBookCover";
 import { PreviewBook, previewBooks } from "@/data/previewBooks";
-import { get } from "http";
 import { getData } from "@/apis/api";
+
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return previewBooks.map(({ _id }) => ({ id: _id }));
