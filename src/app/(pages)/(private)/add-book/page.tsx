@@ -1,3 +1,4 @@
+'use client';
 import { Button, Input, Label, ListBox, Select, TextArea } from "@heroui/react";
 import {
   BookPlus,
@@ -9,8 +10,12 @@ import {
   UserRound,
 } from "lucide-react";
 import { previewBookCategories } from "@/data/previewBooks";
+import { authClient } from "@/lib/auth-client";
 
 export default function AddBookPage() {
+  const userSession = authClient.useSession();
+  const user = userSession.data?.user /* ||null */;
+
   return (
     <section className="booknook-add-book-page" aria-labelledby="add-book-title">
       <header className="booknook-add-book-heading">
@@ -145,7 +150,7 @@ export default function AddBookPage() {
                 <Input
                   className="booknook-add-book-input"
                   id="book-owner-name"
-                  placeholder="Your account name"
+                  value={`${user?.name}`}
                   aria-label="User name"
                   readOnly
                 />
@@ -159,7 +164,7 @@ export default function AddBookPage() {
                   className="booknook-add-book-input"
                   id="book-owner-email"
                   type="email"
-                  placeholder="Your account email"
+                  value={`${user?.email}`}
                   aria-label="User email"
                   readOnly
                 />

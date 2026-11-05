@@ -18,12 +18,13 @@ import { FormEvent, useState } from "react";
 import { toast } from "sonner";
 import { validatePassword } from "@/lib/auth-validation";
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const router = useRouter();
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
@@ -43,9 +44,10 @@ export default function RegisterPage() {
           onSuccess: () => {
             toast.success("Account created successfully.", {
               duration: 1500,
-              onAutoClose: () => window.location.reload(),
-              onDismiss: () => window.location.reload(),
+
             });
+            router.refresh();
+            router.push('/');
           },
           onError: ({ error }) => {
             toast.error(error.message || "Registration failed. Please try again.");

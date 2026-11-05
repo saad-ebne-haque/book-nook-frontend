@@ -38,7 +38,7 @@ export default function Navbar({ session: authenticatedUser }: NavbarProps) {
           <NavbarBrand />
 
           <nav className="booknook-navbar-desktop-nav" aria-label="Primary navigation">
-            <NavbarNavigation pathname={pathname} />
+            <NavbarNavigation pathname={pathname} isLoggedIn={isLoggedIn} />
           </nav>
 
           <div className="booknook-navbar-actions">
@@ -74,7 +74,7 @@ export default function Navbar({ session: authenticatedUser }: NavbarProps) {
           className={`booknook-navbar-mobile-nav${isMobileMenuOpen ? " booknook-navbar-mobile-nav-open" : ""}`}
           aria-label="Primary navigation"
         >
-          <NavbarNavigation pathname={pathname} />
+          <NavbarNavigation pathname={pathname} isLoggedIn={isLoggedIn} />
 
           {!isLoggedIn ? (
             <div className="booknook-navbar-mobile-account">

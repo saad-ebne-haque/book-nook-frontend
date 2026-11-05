@@ -16,8 +16,12 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { validatePassword } from "@/lib/auth-validation";
 import { authClient } from "@/lib/auth-client";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,9 +43,15 @@ export default function LoginPage() {
           onSuccess: () => {
             toast.success("Signed in successfully.", {
               duration: 1500,
-              onAutoClose: () => window.location.reload(),
-              onDismiss: () => window.location.reload(),
+              onAutoClose: () => {
+              },
             });
+            
+            const callbackURL = searchParams.get('callbackURL') || '/';
+            router.push(callbackURL);
+            router.refresh();
+
+            form.reset();
           },
           onError: ({ error }) => {
             toast.error(error.message || "Sign-in failed. Please try again.");

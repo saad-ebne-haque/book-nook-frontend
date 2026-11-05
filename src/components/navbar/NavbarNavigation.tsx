@@ -6,10 +6,22 @@ function isActiveLink(pathname: string, href: string) {
   return pathname === href || (href === "/books" && pathname.startsWith("/books/"));
 }
 
-export default function NavbarNavigation({ pathname }: { pathname: string }) {
+export default function NavbarNavigation({
+  pathname,
+  isLoggedIn,
+}: {
+  pathname: string;
+  isLoggedIn: boolean;
+}) {
+  const visibleLinks = isLoggedIn
+    ? navigationLinks
+    : navigationLinks.filter(({ href }) =>
+        ["/", "/books"].includes(href),
+      );
+
   return (
     <>
-      {navigationLinks.map(({ label, href }) => {
+      {visibleLinks.map(({ label, href }) => {
         const active = isActiveLink(pathname, href);
 
         return (

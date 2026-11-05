@@ -4,11 +4,12 @@ import { toast } from "sonner";
 
 import type { NavbarUser } from "./navbar.types";
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function NavbarUserMenu({ user }: { user: NavbarUser }) {
   const initial = user.name.trim().charAt(0).toUpperCase();
   const image = user.image ?? user.avatarUrl;
-
+  const router = useRouter();
   const handleSignout = async () => {
     try {
       await authClient.signOut({
@@ -16,9 +17,9 @@ export default function NavbarUserMenu({ user }: { user: NavbarUser }) {
           onSuccess: () => {
             toast.success("Signed out successfully.", {
               duration: 1500,
-              onAutoClose: () => window.location.reload(),
-              onDismiss: () => window.location.reload(),
+
             });
+            router.push("/login");
           },
           onError: ({ error }) => {
             toast.error(error.message || "Sign-out failed. Please try again.");
