@@ -13,31 +13,20 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
-import { Suspense, useState, type FormEvent, type ReactNode } from "react";
+import { useState, type FormEvent } from "react";
 import { validatePassword } from "@/lib/auth-validation";
 import { authClient } from "@/lib/auth-client";
-import { useRouter, useSearchParams } from "next/navigation";
-
-function LoginSearchParams({
-  children,
-}: {
-  children: (callbackURL: string) => ReactNode;
-}) {
-  const searchParams = useSearchParams();
-  return children(searchParams.get("callbackURL") || "/");
-}
 
 export default function LoginPage() {
-  const router = useRouter();
-
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit = async (e: FormEvent<HTMLFormElement>, callbackURL: string) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
 
+    const callbackURL = new URLSearchParams(window.location.search).get("callbackURL") || "/";
     const form = e.currentTarget;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
@@ -49,15 +38,18 @@ export default function LoginPage() {
         password: data.password as string,
         fetchOptions: {
           onSuccess: () => {
+            const redirectURL = new URL(callbackURL, window.location.origin);
+            const destination =
+              redirectURL.origin === window.location.origin
+                ? redirectURL.href
+                : window.location.origin;
+            const navigateToCallback = () => window.location.assign(destination);
+
             toast.success("Signed in successfully.", {
               duration: 1500,
-              onAutoClose: () => {
-              },
+              onAutoClose: navigateToCallback,
+              onDismiss: navigateToCallback,
             });
-            
-            router.push(callbackURL);
-            router.refresh();
-
             form.reset();
           },
           onError: ({ error }) => {
@@ -71,8 +63,8 @@ export default function LoginPage() {
       );
     } finally {
       setIsSubmitting(false);
-    };
-  }
+    }
+  };
 
   return (
     <section className="booknook-login-page" aria-labelledby="login-title">
@@ -142,23 +134,11 @@ export default function LoginPage() {
               </p>
             </div>
 
-            <Suspense
-              fallback={
-                <div className="booknook-login-form-fallback" aria-hidden="true">
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                </div>
-              }
+            <Form
+              className="booknook-auth-form"
+              validationBehavior="native"
+              onSubmit={onSubmit}
             >
-              <LoginSearchParams>
-                {(callbackURL) => (
-                  <Form
-                    className="booknook-auth-form"
-                    validationBehavior="native"
-                    onSubmit={(event) => onSubmit(event, callbackURL)}
-                  >
               <div className="booknook-login-fields">
                 <TextField className="booknook-login-field" isRequired>
                   <Label htmlFor="login-email">Email address</Label>
@@ -258,10 +238,7 @@ export default function LoginPage() {
                   Login with Google
                 </Button>
               </div>
-                  </Form>
-                )}
-              </LoginSearchParams>
-            </Suspense>
+            </Form>
 
             <p className="booknook-login-register">
               New to BookNook? <Link href="/register">Create an account</Link>
