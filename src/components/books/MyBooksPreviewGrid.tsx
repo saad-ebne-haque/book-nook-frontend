@@ -21,7 +21,7 @@ export default function MyBooksPreviewGrid({
       <div className="booknook-home-book-grid booknook-my-books-grid">
         {books.map((book) => (
           <PreviewBookCard
-            key={book.id}
+            key={book._id}
             book={book}
             titleLevel="h2"
             action={

@@ -63,7 +63,7 @@ export default function MyBorrowsPreviewTable({
               </Table.Header>
               <Table.Body>
                 {books.map((book) => (
-                  <Table.Row key={book.id} id={book.id}>
+                  <Table.Row key={book._id} id={book._id}>
                     <Table.Cell>
                       <div className="booknook-borrows-cover">
                         <PreviewBookCover book={book} />
@@ -105,7 +105,7 @@ export default function MyBorrowsPreviewTable({
 
       <div className="booknook-my-borrows-mobile-list">
         {books.map((book) => (
-          <article className="booknook-my-borrows-mobile-card" key={book.id}>
+          <article className="booknook-my-borrows-mobile-card" key={book._id}>
             <div className="booknook-my-borrows-mobile-book">
               <div className="booknook-borrows-cover">
                 <PreviewBookCover book={book} />

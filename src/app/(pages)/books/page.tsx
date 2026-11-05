@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import { Sparkles } from "lucide-react";
 import PreviewBookCatalogFilters from "@/components/books/PreviewBookCatalogFilters";
+
+export const metadata: Metadata = {
+  title: "Explore Books",
+  description: "Browse the BookNook collection and find your next favorite book.",
+};
 
 export default function AllBooksPage() {
   return (

@@ -5,6 +5,7 @@ import { Button, Input, Label, Modal } from "@heroui/react";
 import { BookCheck, Eye, Mail, UserRound } from "lucide-react";
 import PreviewBookCover from "@/components/books/PreviewBookCover";
 import type { PreviewBook } from "@/data/previewBooks";
+import { authClient } from "@/lib/auth-client";
 
 type BorrowConfirmationModalPreviewProps = {
   book: PreviewBook;
@@ -14,6 +15,9 @@ export default function BorrowConfirmationModalPreview({
   book,
 }: BorrowConfirmationModalPreviewProps) {
   const [isOpen, setIsOpen] = useState(false);
+const userSession = authClient.useSession();
+  const user = userSession.data?.user || null;
+
 
   return (
     <Modal
@@ -82,7 +86,7 @@ export default function BorrowConfirmationModalPreview({
                   <Input
                     className="booknook-borrow-confirm-input"
                     id="borrow-preview-name"
-                    value="Sample Reader"
+                    value={user?.name || "Sample Reader"}
                     readOnly
                     aria-label="Sample user name"
                   />
@@ -95,7 +99,7 @@ export default function BorrowConfirmationModalPreview({
                   <Input
                     className="booknook-borrow-confirm-input"
                     id="borrow-preview-email"
-                    value="reader@booknook.example"
+                    value={user?.email || "reader@booknook.example"}
                     readOnly
                     aria-label="Sample user email"
                   />

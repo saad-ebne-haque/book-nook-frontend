@@ -1,6 +1,12 @@
 
+import type { Metadata } from "next";
 import { Avatar, Button, Card } from "@heroui/react";
 import { BookOpenCheck, LockKeyhole, Mail, UserRound } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "My Profile",
+  description: "View your BookNook account profile.",
+};
 
 export default function ProfilePage() {
   return (

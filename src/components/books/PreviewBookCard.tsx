@@ -23,7 +23,7 @@ export default function PreviewBookCard({
     <article className="booknook-home-book-card">
       <Link
         className="booknook-home-book-link"
-        href={`/books/${book.id}`}
+        href={`/books/${book._id}`}
       >
         <div className="booknook-home-book-cover-stage">
           <PreviewBookCover book={book} />

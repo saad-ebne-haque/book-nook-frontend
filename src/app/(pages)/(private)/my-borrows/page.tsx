@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { BookOpenCheck, CalendarDays, LibraryBig } from "lucide-react";
 import MyBorrowsPreviewTable from "@/components/books/MyBorrowsPreviewTable";
 import { previewBooks } from "@/data/previewBooks";
@@ -7,6 +8,11 @@ const previewBorrowDates = [
   { borrowedOn: "2026-10-27", returnBy: "2026-11-10" },
   { borrowedOn: "2026-10-30", returnBy: "2026-11-13" },
 ];
+
+export const metadata: Metadata = {
+  title: "My Borrowed Books",
+  description: "Review your BookNook borrowing activity.",
+};
 
 export default function MyBorrowsPage() {
   const borrowPreviews = previewBooks.slice(0, 3).map((book, index) => ({

@@ -1,12 +1,13 @@
-"use client";
-
-import { Button } from "@heroui/react";
+import type { Metadata } from "next";
 import { ArrowLeft, BookOpen, Sparkles } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Page Not Found",
+  description: "We couldn’t find the page you were looking for.",
+};
 
 export default function NotFound() {
-  const router = useRouter();
-
   return (
     <section className="booknook-not-found" aria-labelledby="not-found-title">
       <div className="booknook-not-found-content">
@@ -31,16 +32,10 @@ export default function NotFound() {
           We couldn’t find the page you were looking for. Let’s get you back to
           the reading room.
         </p>
-        <Button
-          className="booknook-not-found-home"
-          onPress={() => router.push("/")}
-          type="button"
-          variant="primary"
-          size="lg"
-        >
+        <Link className="booknook-not-found-home" href="/">
           <ArrowLeft size={17} aria-hidden="true" />
           Back to Home
-        </Button>
+        </Link>
       </div>
     </section>
   );

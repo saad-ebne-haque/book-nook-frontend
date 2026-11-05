@@ -56,7 +56,7 @@ export default function PreviewBookCatalogFilters() {
       .filter(
         (book) =>
           (!normalizedQuery ||
-            [book.title, book.author, book.isbn, book.category].some((value) =>
+            [book.title, book.author, book.category].some((value) =>
               value.toLocaleLowerCase().includes(normalizedQuery),
             )) &&
           (category === "all" || book.category === category) &&
@@ -103,7 +103,7 @@ export default function PreviewBookCatalogFilters() {
             aria-label="Search books"
             autoComplete="off"
             onChange={(event) => setSearchQuery(event.target.value)}
-            placeholder="Search by title, author, ISBN, or category"
+            placeholder="Search by title, author, or category"
             type="search"
             value={searchQuery}
           />
@@ -221,13 +221,13 @@ export default function PreviewBookCatalogFilters() {
         <div className="booknook-home-book-grid">
           {filteredBooks.map((book) => (
             <PreviewBookCard
-              key={book.id}
+              key={book._id}
               book={book}
               titleLevel="h2"
               action={
                 <Link
                   className="booknook-home-details-button"
-                  href={`/books/${book.id}`}
+                  href={`/books/${book._id}`}
                 >
                   View Details
                 </Link>

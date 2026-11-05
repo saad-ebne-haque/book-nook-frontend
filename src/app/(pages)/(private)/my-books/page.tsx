@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { ArrowRight, LibraryBig, Plus } from "lucide-react";
 import Link from "next/link";
 import MyBooksPreviewGrid from "@/components/books/MyBooksPreviewGrid";
 import { previewBooks } from "@/data/previewBooks";
+
+export const metadata: Metadata = {
+  title: "My Library",
+  description: "Explore your BookNook library.",
+};
 
 export default function MyBooksPage() {
   const myBooksPreview = previewBooks.slice(0, 3);

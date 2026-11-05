@@ -1341,7 +1341,7 @@ textarea {
 
 .booknook-book-detail-facts {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
   gap: 1rem;
   margin-top: 1.5rem;
 }
@@ -4514,7 +4514,10 @@ textarea {
 }
 
 .booknook-not-found-home {
+  display: inline-flex;
   min-height: 2.875rem;
+  align-items: center;
+  justify-content: center;
   gap: 0.55rem;
   border-radius: 0.75rem;
   background: var(--booknook-primary);
@@ -4523,6 +4526,7 @@ textarea {
   font-family: inherit;
   font-size: 0.875rem;
   font-weight: 600;
+  text-decoration: none;
 }
 
 .booknook-not-found-home:hover,

@@ -156,17 +156,6 @@ export default function EditBookModalPreview({
                   </div>
 
                   <div className="booknook-add-book-field">
-                    <Label htmlFor="edit-preview-isbn">ISBN</Label>
-                    <Input
-                      className="booknook-add-book-input"
-                      id="edit-preview-isbn"
-                      value={book.isbn}
-                      readOnly
-                      aria-label="ISBN"
-                    />
-                  </div>
-
-                  <div className="booknook-add-book-field">
                     <Label htmlFor="edit-preview-language">Language</Label>
                     <Input
                       className="booknook-add-book-input"

@@ -35,13 +35,13 @@ export default function HomepageBookSection({
       <div className="booknook-home-book-grid">
         {books.map((book) => (
           <PreviewBookCard
-            key={book.id}
+            key={book._id}
             book={book}
             titleLevel="h3"
             action={
               <Link
                 className="booknook-home-details-button"
-                href={`/books/${book.id}`}
+                href={`/books/${book._id}`}
               >
                 View Details
               </Link>

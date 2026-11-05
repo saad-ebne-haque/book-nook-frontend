@@ -10,12 +10,25 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import BorrowConfirmationModalPreview from "@/components/books/BorrowConfirmationModalPreview";
 import PreviewBookCover from "@/components/books/PreviewBookCover";
 import { previewBooks } from "@/data/previewBooks";
 
 export function generateStaticParams() {
-  return previewBooks.map(({ id }) => ({ id }));
+  return previewBooks.map(({ _id }) => ({ id: _id }));
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/books/[id]">): Promise<Metadata> {
+  const { id } = await params;
+  const book = previewBooks.find((item) => item._id === id);
+
+  return {
+    title: book?.title ?? "Book Not Found",
+    description: book?.description ?? "Explore books in the BookNook collection.",
+  };
 }
 
 export default function BookDetailsPage({
@@ -44,7 +57,7 @@ async function BookDetailsContent({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const book = previewBooks.find((item) => item.id === id);
+  const book = previewBooks.find((item) => item._id === id);
 
   if (!book) {
     notFound();
@@ -124,10 +137,6 @@ async function BookDetailsContent({
             <div>
               <span>Language</span>
               <strong>{book.language}</strong>
-            </div>
-            <div>
-              <span>ISBN</span>
-              <strong>{book.isbn}</strong>
             </div>
             <div>
               <span>Availability</span>
