@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import BorrowConfirmationModalPreview from "@/components/books/BorrowConfirmationModalPreview";
 import PreviewBookCover from "@/components/books/PreviewBookCover";
 import { previewBooks } from "@/data/previewBooks";
@@ -17,9 +18,31 @@ export function generateStaticParams() {
   return previewBooks.map(({ id }) => ({ id }));
 }
 
-export default async function BookDetailsPage({
+export default function BookDetailsPage({
   params,
 }: PageProps<"/books/[id]">) {
+  return (
+    <Suspense
+      fallback={
+        <section
+          className="booknook-book-detail-page"
+          role="status"
+          aria-busy="true"
+        >
+          Loading book details...
+        </section>
+      }
+    >
+      <BookDetailsContent params={params} />
+    </Suspense>
+  );
+}
+
+async function BookDetailsContent({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const book = previewBooks.find((item) => item.id === id);
 

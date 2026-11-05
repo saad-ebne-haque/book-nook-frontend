@@ -14,12 +14,53 @@ import {
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
+import { toast } from "sonner";
 import { validatePassword } from "@/lib/auth-validation";
+import { authClient } from "@/lib/auth-client";
 
 export default function RegisterPage() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    setIsSubmitting(true);
+    try {
+      await authClient.signUp.email({
+        name: data.name as string,
+        email: data.email as string,
+        password: data.password as string,
+        image: data.photoURL as string,
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success("Account created successfully.", {
+              duration: 1500,
+              onAutoClose: () => window.location.reload(),
+              onDismiss: () => window.location.reload(),
+            });
+          },
+          onError: ({ error }) => {
+            toast.error(error.message || "Registration failed. Please try again.");
+          },
+        },
+      });
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Registration failed. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
 
   return (
     <section
@@ -95,7 +136,7 @@ export default function RegisterPage() {
             <Form
               className="booknook-auth-form"
               validationBehavior="native"
-              onSubmit={(event) => event.preventDefault()}
+              onSubmit={onSubmit}
             >
               <div className="booknook-login-fields booknook-register-fields">
                 <TextField className="booknook-login-field" isRequired>
@@ -154,6 +195,7 @@ export default function RegisterPage() {
                 <TextField
                   className="booknook-login-field"
                   isRequired
+                  aria-label="Password"
                   validate={validatePassword}
                   isInvalid={
                     passwordValue ? Boolean(validatePassword(passwordValue)) : undefined
@@ -206,9 +248,10 @@ export default function RegisterPage() {
                   type="submit"
                   variant="primary"
                   size="lg"
+                  isDisabled={isSubmitting}
                 >
-                  Create Account
-                  <ArrowRight size={17} aria-hidden="true" />
+                  {isSubmitting ? "Creating account..." : "Create Account"}
+                  {!isSubmitting ? <ArrowRight size={17} aria-hidden="true" /> : null}
                 </Button>
 
                 <div className="booknook-login-divider">

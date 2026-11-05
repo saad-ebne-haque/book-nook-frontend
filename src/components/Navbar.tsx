@@ -8,27 +8,39 @@ import NavbarAccountLinks from "./navbar/NavbarAccountLinks";
 import NavbarBrand from "./navbar/NavbarBrand";
 import NavbarNavigation from "./navbar/NavbarNavigation";
 import NavbarUserMenu from "./navbar/NavbarUserMenu";
-import type { NavbarProps } from "./navbar/navbar.types";
+import type { NavbarProps, NavbarUser } from "./navbar/navbar.types";
 
-export default function Navbar({ user: authenticatedUser }: NavbarProps) {
+export default function Navbar({ session: authenticatedUser }: NavbarProps) {
+
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const isLoggedIn = false;
+
+  const isLoggedIn = Boolean(authenticatedUser?.user);
+
   const user = {
     name: "Saad",
     email: "saad@example.com",
     image: "https://i.pravatar.cc/150?img=12",
   };
-  const currentUser = authenticatedUser ?? user;
+
+  const currentUser: NavbarUser = authenticatedUser?.user
+    ? {
+      name: authenticatedUser.user.name,
+      email: authenticatedUser.user.email,
+      image: authenticatedUser.user.image ?? undefined,
+    }
+    : user;
 
   return (
     <header className="booknook-navbar">
       <div className="booknook-navbar-container">
         <div className="booknook-navbar-top-row">
           <NavbarBrand />
+
           <nav className="booknook-navbar-desktop-nav" aria-label="Primary navigation">
             <NavbarNavigation pathname={pathname} />
           </nav>
+
           <div className="booknook-navbar-actions">
             <button
               type="button"
@@ -44,6 +56,7 @@ export default function Navbar({ user: authenticatedUser }: NavbarProps) {
                 <Menu aria-hidden="true" />
               )}
             </button>
+
             <div
               className={`booknook-navbar-account${isLoggedIn ? " booknook-navbar-account-authenticated" : ""}`}
             >
@@ -55,12 +68,14 @@ export default function Navbar({ user: authenticatedUser }: NavbarProps) {
             </div>
           </div>
         </div>
+
         <nav
           id="booknook-mobile-navigation"
           className={`booknook-navbar-mobile-nav${isMobileMenuOpen ? " booknook-navbar-mobile-nav-open" : ""}`}
           aria-label="Primary navigation"
         >
           <NavbarNavigation pathname={pathname} />
+
           {!isLoggedIn ? (
             <div className="booknook-navbar-mobile-account">
               <NavbarAccountLinks />

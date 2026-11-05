@@ -1,3 +1,5 @@
+import { auth } from "@/lib/auth";
+
 export type NavbarUser = {
   name: string;
   email?: string;
@@ -5,8 +7,12 @@ export type NavbarUser = {
   avatarUrl?: string;
 };
 
+export type SessionType = Awaited<
+  ReturnType<typeof auth.api.getSession>
+>;
+
 export type NavbarProps = {
-  user?: NavbarUser | null;
+  session?: SessionType;
 };
 
 export const navigationLinks = [

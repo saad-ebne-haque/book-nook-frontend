@@ -15,6 +15,7 @@
 @import "@heroui/styles/components/textarea.css" layer(components);
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "sonner/dist/styles.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -85,6 +86,36 @@
   --sidebar-accent-foreground: var(--shadcn-accent-foreground);
   --sidebar-border: var(--border);
   --sidebar-ring: var(--ring);
+}
+
+[data-sonner-toaster].booknook-toaster[data-sonner-theme="light"] {
+  --normal-bg: #faf9f6;
+  --normal-border: #e8e5de;
+  --normal-text: #242824;
+  --normal-bg-hover: #ffffff;
+  --success-bg: #edf5f1;
+  --success-border: #c9ded4;
+  --success-text: #245c4f;
+  --info-bg: #f0f5f2;
+  --info-border: #d7e5dd;
+  --info-text: #245c4f;
+  --warning-bg: #fbf5e9;
+  --warning-border: #ead9b9;
+  --warning-text: #765a2c;
+  --error-bg: #fbefed;
+  --error-border: #efd1cb;
+  --error-text: #9c3d32;
+  --border-radius: 0.875rem;
+  font-family: var(--font-geist-sans), sans-serif;
+}
+
+[data-sonner-toaster].booknook-toaster[data-sonner-theme="light"] [data-sonner-toast] {
+  box-shadow: 0 8px 24px rgb(36 40 36 / 10%);
+  font-size: 0.875rem;
+}
+
+[data-sonner-toaster].booknook-toaster[data-sonner-theme="light"] [data-sonner-toast] [data-title] {
+  font-weight: 600;
 }
 
 @theme inline {
@@ -3737,6 +3768,33 @@ textarea {
   gap: 0.5rem;
 }
 
+.booknook-navbar-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.booknook-navbar-loading span {
+  height: 2.5rem;
+  border-radius: 10px;
+  background: var(--border);
+  animation: booknook-navbar-loading-pulse 1.2s ease-in-out infinite;
+}
+
+.booknook-navbar-loading span:first-child {
+  width: 4.25rem;
+}
+
+.booknook-navbar-loading span:last-child {
+  width: 5.5rem;
+}
+
+@keyframes booknook-navbar-loading-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
 .booknook-navbar-account-link {
   display: inline-flex;
   min-height: 2.5rem;
@@ -4068,8 +4126,10 @@ textarea {
 
 @media (prefers-reduced-motion: reduce) {
   .booknook-navbar-link,
-  .booknook-navbar-account-link {
+  .booknook-navbar-account-link,
+  .booknook-navbar-loading span {
     transition: none;
+    animation: none;
   }
 }
 

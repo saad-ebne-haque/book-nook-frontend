@@ -18,10 +18,10 @@ export default function NavbarFallback() {
             ))}
           </nav>
           <div className="booknook-navbar-account">
-            <span className="booknook-navbar-account-link booknook-navbar-login">Login</span>
-            <span className="booknook-navbar-account-link booknook-navbar-register">
-              Register
-            </span>
+            <div className="booknook-navbar-loading">
+              <span />
+              <span />
+            </div>
           </div>
         </div>
         <nav className="booknook-navbar-mobile-nav">

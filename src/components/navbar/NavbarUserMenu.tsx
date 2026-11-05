@@ -1,11 +1,36 @@
 import { Avatar, Dropdown } from "@heroui/react";
 import { ChevronDown } from "lucide-react";
+import { toast } from "sonner";
 
 import type { NavbarUser } from "./navbar.types";
+import { authClient } from "@/lib/auth-client";
 
 export default function NavbarUserMenu({ user }: { user: NavbarUser }) {
   const initial = user.name.trim().charAt(0).toUpperCase();
   const image = user.image ?? user.avatarUrl;
+
+  const handleSignout = async () => {
+    try {
+      await authClient.signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success("Signed out successfully.", {
+              duration: 1500,
+              onAutoClose: () => window.location.reload(),
+              onDismiss: () => window.location.reload(),
+            });
+          },
+          onError: ({ error }) => {
+            toast.error(error.message || "Sign-out failed. Please try again.");
+          },
+        },
+      });
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Sign-out failed. Please try again.",
+      );
+    }
+  }
 
   return (
     <div className="booknook-navbar-profile-area">
@@ -50,6 +75,7 @@ export default function NavbarUserMenu({ user }: { user: NavbarUser }) {
               id="logout"
               variant="danger"
               className="booknook-navbar-profile-menu-item booknook-navbar-logout"
+              onClick={handleSignout}
             >
               Logout
             </Dropdown.Item>

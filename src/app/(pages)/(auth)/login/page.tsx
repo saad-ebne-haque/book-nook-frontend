@@ -1,5 +1,5 @@
 "use client";
-
+import { toast } from "sonner";
 import { Button, FieldError, Form, Input, Label, TextField } from "@heroui/react";
 import {
   ArrowRight,
@@ -13,12 +13,49 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { validatePassword } from "@/lib/auth-validation";
+import { authClient } from "@/lib/auth-client";
 
 export default function LoginPage() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    setIsSubmitting(true);
+    try {
+      await authClient.signIn.email({
+        email: data.email as string,
+        password: data.password as string,
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success("Signed in successfully.", {
+              duration: 1500,
+              onAutoClose: () => window.location.reload(),
+              onDismiss: () => window.location.reload(),
+            });
+          },
+          onError: ({ error }) => {
+            toast.error(error.message || "Sign-in failed. Please try again.");
+          },
+        },
+      });
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Sign-in failed. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <section className="booknook-login-page" aria-labelledby="login-title">
@@ -91,7 +128,7 @@ export default function LoginPage() {
             <Form
               className="booknook-auth-form"
               validationBehavior="native"
-              onSubmit={(event) => event.preventDefault()}
+              onSubmit={onSubmit}
             >
               <div className="booknook-login-fields">
                 <TextField className="booknook-login-field" isRequired>
@@ -168,9 +205,10 @@ export default function LoginPage() {
                   type="submit"
                   variant="primary"
                   size="lg"
+                  isDisabled={isSubmitting}
                 >
-                  Login
-                  <ArrowRight size={17} aria-hidden="true" />
+                  {isSubmitting ? "Signing in..." : "Login"}
+                  {!isSubmitting ? <ArrowRight size={17} aria-hidden="true" /> : null}
                 </Button>
 
                 <div className="booknook-login-divider">
