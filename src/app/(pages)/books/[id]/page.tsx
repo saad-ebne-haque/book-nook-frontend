@@ -1,3 +1,4 @@
+
 import { Badge, Card } from "@heroui/react";
 import {
   ArrowLeft,
@@ -8,19 +9,14 @@ import {
   Star,
 } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import {  connection } from "next/server";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import BorrowConfirmationModalPreview from "@/components/books/BorrowConfirmationModalPreview";
 import PreviewBookCover from "@/components/books/PreviewBookCover";
 import { PreviewBook, previewBooks } from "@/data/previewBooks";
 import { getData } from "@/apis/api";
-
-export const dynamic = "force-dynamic";
-
-export function generateStaticParams() {
-  return previewBooks.map(({ _id }) => ({ id: _id }));
-}
+import { notFound } from "next/navigation";
 
 export async function generateMetadata({
   params,
@@ -30,15 +26,14 @@ export async function generateMetadata({
 
   return {
     title: book?.title ?? "Book Not Found",
-    description: book?.description ?? "Explore books in the BookNook collection.",
+    description:
+      book?.description ?? "Explore books in the BookNook collection.",
   };
 }
 
 export default function BookDetailsPage({
   params,
 }: PageProps<"/books/[id]">) {
-
-
   return (
     <Suspense
       fallback={
@@ -62,9 +57,12 @@ async function BookDetailsContent({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  await connection();
+
   const bookRes = await getData(`/books/${id}`);
   const book: PreviewBook = bookRes.data;
-  
+
   if (!book) {
     notFound();
   }
@@ -94,6 +92,7 @@ async function BookDetailsContent({
               sizes="(max-width: 45rem) 76vw, 22rem"
             />
           </div>
+
           <p className="booknook-book-cover-caption">
             <BookOpen size={15} aria-hidden="true" />
             Book cover
@@ -102,15 +101,21 @@ async function BookDetailsContent({
 
         <div className="booknook-book-detail-content">
           <p className="booknook-eyebrow">A story to settle into</p>
+
           <h1>{book.title}</h1>
+
           <p className="booknook-book-detail-byline">
             by <span>{book.author}</span>
           </p>
 
           <div className="booknook-book-detail-meta">
-            <Badge className="booknook-home-book-category" variant="soft">
+            <Badge
+              className="booknook-home-book-category"
+              variant="soft"
+            >
               {book.category}
             </Badge>
+
             <span className="booknook-book-detail-edition">
               {book.language} · {book.publishedYear}
             </span>
@@ -129,6 +134,7 @@ async function BookDetailsContent({
               <Card.Title className="booknook-book-detail-subheading">
                 About this book
               </Card.Title>
+
               <Card.Description className="booknook-book-detail-description">
                 {book.description}
               </Card.Description>
@@ -140,12 +146,15 @@ async function BookDetailsContent({
               <span>Published</span>
               <strong>{book.publishedYear}</strong>
             </div>
+
             <div>
               <span>Language</span>
               <strong>{book.language}</strong>
             </div>
+
             <div>
               <span>Availability</span>
+
               <strong
                 className={
                   book.availableCopies > 0
@@ -157,7 +166,10 @@ async function BookDetailsContent({
                   <>
                     <Check size={16} aria-hidden="true" />
                     {book.availableCopies}{" "}
-                    {book.availableCopies === 1 ? "copy" : "copies"} available
+                    {book.availableCopies === 1
+                      ? "copy"
+                      : "copies"}{" "}
+                    available
                   </>
                 ) : (
                   "Currently unavailable"
