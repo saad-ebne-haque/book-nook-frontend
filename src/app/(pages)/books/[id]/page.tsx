@@ -13,7 +13,9 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import BorrowConfirmationModalPreview from "@/components/books/BorrowConfirmationModalPreview";
 import PreviewBookCover from "@/components/books/PreviewBookCover";
-import { previewBooks } from "@/data/previewBooks";
+import { PreviewBook, previewBooks } from "@/data/previewBooks";
+import { get } from "http";
+import { getData } from "@/apis/api";
 
 export function generateStaticParams() {
   return previewBooks.map(({ _id }) => ({ id: _id }));
@@ -34,6 +36,8 @@ export async function generateMetadata({
 export default function BookDetailsPage({
   params,
 }: PageProps<"/books/[id]">) {
+
+
   return (
     <Suspense
       fallback={
@@ -57,8 +61,9 @@ async function BookDetailsContent({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const book = previewBooks.find((item) => item._id === id);
-
+  const bookRes = await getData(`/books/${id}`);
+  const book: PreviewBook = bookRes.data;
+  
   if (!book) {
     notFound();
   }

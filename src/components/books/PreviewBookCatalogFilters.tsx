@@ -15,8 +15,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { previewBooks } from "@/data/previewBooks";
-
+import { getData } from "@/apis/api";
+import { PreviewBook } from "@/data/previewBooks";
+const previewBookRes = await getData('/books')
+const previewBooks: PreviewBook[] = previewBookRes.data
 const categoryCounts = Array.from(
   previewBooks.reduce((counts, book) => {
     counts.set(book.category, (counts.get(book.category) ?? 0) + 1);
