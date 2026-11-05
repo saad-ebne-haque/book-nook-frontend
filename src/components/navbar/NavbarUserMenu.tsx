@@ -19,6 +19,7 @@ export default function NavbarUserMenu({ user }: { user: NavbarUser }) {
               duration: 1500,
 
             });
+            router.refresh();
             router.push("/login");
           },
           onError: ({ error }) => {

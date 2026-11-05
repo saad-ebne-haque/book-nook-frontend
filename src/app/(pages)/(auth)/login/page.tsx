@@ -13,20 +13,28 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { Suspense, useState, type FormEvent, type ReactNode } from "react";
 import { validatePassword } from "@/lib/auth-validation";
 import { authClient } from "@/lib/auth-client";
 import { useRouter, useSearchParams } from "next/navigation";
 
+function LoginSearchParams({
+  children,
+}: {
+  children: (callbackURL: string) => ReactNode;
+}) {
+  const searchParams = useSearchParams();
+  return children(searchParams.get("callbackURL") || "/");
+}
+
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>, callbackURL: string) => {
     e.preventDefault();
     if (isSubmitting) return;
 
@@ -47,7 +55,6 @@ export default function LoginPage() {
               },
             });
             
-            const callbackURL = searchParams.get('callbackURL') || '/';
             router.push(callbackURL);
             router.refresh();
 
@@ -64,7 +71,7 @@ export default function LoginPage() {
       );
     } finally {
       setIsSubmitting(false);
-    }
+    };
   }
 
   return (
@@ -135,11 +142,23 @@ export default function LoginPage() {
               </p>
             </div>
 
-            <Form
-              className="booknook-auth-form"
-              validationBehavior="native"
-              onSubmit={onSubmit}
+            <Suspense
+              fallback={
+                <div className="booknook-login-form-fallback" aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              }
             >
+              <LoginSearchParams>
+                {(callbackURL) => (
+                  <Form
+                    className="booknook-auth-form"
+                    validationBehavior="native"
+                    onSubmit={(event) => onSubmit(event, callbackURL)}
+                  >
               <div className="booknook-login-fields">
                 <TextField className="booknook-login-field" isRequired>
                   <Label htmlFor="login-email">Email address</Label>
@@ -239,7 +258,10 @@ export default function LoginPage() {
                   Login with Google
                 </Button>
               </div>
-            </Form>
+                  </Form>
+                )}
+              </LoginSearchParams>
+            </Suspense>
 
             <p className="booknook-login-register">
               New to BookNook? <Link href="/register">Create an account</Link>
