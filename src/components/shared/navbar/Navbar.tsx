@@ -1,8 +1,17 @@
 'use client';
 import { useState } from "react";
-import { Link, Button } from "@heroui/react";
+import { Link, Button, Avatar } from "@heroui/react";
+import { authClient } from "@/lib/auth-client";
+import LoggedinDropdown from "./LoggedinDropdown";
 
 export default function Navbar() {
+    const { data, error, isPending } = authClient.useSession();
+    // console.log('pending', isPending);
+    // console.log('error', error);
+    // console.log('data', data);
+
+
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuItems = [
         { name: "Home", href: "/" },
@@ -63,11 +72,30 @@ export default function Navbar() {
                         </li>
                     ))}
                 </ul>
-                <div className="hidden items-center gap-4 md:flex">
-                    <Link href="/login">Login</Link>
+                {
+                    isPending ?
+                        <>
+                            <div className="hidden items-center gap-4 md:flex">
+                                <Button className='bg-gray-300 animate-pulse text-transparent'>Login</Button>
 
-                    <Button><Link href="/register" className={'no-underline'}>Register</Link></Button>
-                </div>
+                                <Button className='bg-gray-300 animate-pulse text-transparent'>Register</Button>
+                            </div>
+                        </> :
+                        data ?
+                            <>
+                                <LoggedinDropdown user={data.user}></LoggedinDropdown>
+                            </> :
+
+                            <div className="hidden items-center gap-4 md:flex">
+                                <Link href="/login">Login</Link>
+
+                                <Link href="/register" className={'no-underline'}>
+                                    <Button>
+                                        Register
+                                    </Button>
+                                </Link>
+                            </div>
+                }
             </header>
             {isMenuOpen && (
                 <div className="border-t border-separator md:hidden">
@@ -83,11 +111,11 @@ export default function Navbar() {
                                 </Link>
                             </li>
                         ))}
-                        <li className="mt-4 flex flex-col gap-2 border-t border-separator pt-4">
+                        <li className={`mt-4 ${isPending ? 'hidden' : !data ? 'hidden' : 'flex'} flex-col gap-2 border-t border-separator pt-4`}>
                             <Link href="/login" className="block py-2">
                                 Login
                             </Link>
-                            <Button className="w-full"><Link href="/register" className={'no-underline '}>Register</Link></Button>
+                            <Button className="w-full"><Link href="/register" className='no-underline'>Register</Link></Button>
                         </li>
                     </ul>
                 </div>
