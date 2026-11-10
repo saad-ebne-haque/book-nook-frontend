@@ -1,22 +1,22 @@
 'use client';
 import { useState } from "react";
-import { Link, Button, Avatar } from "@heroui/react";
+import { Link, Button } from "@heroui/react";
 import { authClient } from "@/lib/auth-client";
 import LoggedinDropdown from "./LoggedinDropdown";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
-    const { data, error, isPending } = authClient.useSession();
-    // console.log('pending', isPending);
-    // console.log('error', error);
-    // console.log('data', data);
+    const { data, isPending } = authClient.useSession();
 
+    const pathname = usePathname();
 
+   
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuItems = [
         { name: "Home", href: "/" },
         { name: "All Books", href: "/books" },
-        { name: "Add Book", href: "/add-book", current: true },
+        { name: "Add Book", href: "/add-book" },
         { name: "My Books", href: "/my-books" },
         { name: "My Borrows", href: "/my-borrows" },
     ];
@@ -60,17 +60,21 @@ export default function Navbar() {
                     </div>
                 </div>
                 <ul className="hidden items-center gap-4 md:flex">
-                    {menuItems.map((item) => (
-                        <li key={item.name}>
-                            <Link
-                                href={item.href}
-                                className={`font-medium ${item.current ? "text-accent" : "text-foreground"}`}
-                                aria-current={item.current ? "page" : undefined}
-                            >
-                                {item.name}
-                            </Link>
-                        </li>
-                    ))}
+                    {menuItems.map((item) => {
+                        const currentPage = pathname === item.href;
+
+                        return (
+                            <li key={item.name}>
+                                <Link
+                                    href={item.href}
+                                    className={`font-medium ${currentPage ? "text-accent" : "text-foreground"}`}
+                                    aria-current={currentPage ? "page" : undefined}
+                                >
+                                    {item.name}
+                                </Link>
+                            </li>
+                        )
+                    })}
                 </ul>
                 {
                     isPending ?
@@ -100,17 +104,21 @@ export default function Navbar() {
             {isMenuOpen && (
                 <div className="border-t border-separator md:hidden">
                     <ul className="flex flex-col gap-2 p-4">
-                        {menuItems.map((item) => (
-                            <li key={item.name}>
-                                <Link
-                                    href={item.href}
-                                    className={`block py-2 ${item.current ? "font-medium text-accent" : "font-medium text-foreground"}`}
-                                    aria-current={item.current ? "page" : undefined}
-                                >
-                                    {item.name}
-                                </Link>
-                            </li>
-                        ))}
+                        {menuItems.map((item) => {
+                            const currentPage = pathname === item.href;
+
+                            return (
+                                <li key={item.name}>
+                                    <Link
+                                        href={item.href}
+                                        className={`block py-2 ${currentPage ? "font-medium text-accent" : "font-medium text-foreground"}`}
+                                        aria-current={currentPage ? "page" : undefined}
+                                    >
+                                        {item.name}
+                                    </Link>
+                                </li>
+                            )
+                        })}
                         <li className={`mt-4 ${isPending ? 'hidden' : !data ? 'hidden' : 'flex'} flex-col gap-2 border-t border-separator pt-4`}>
                             <Link href="/login" className="block py-2">
                                 Login
