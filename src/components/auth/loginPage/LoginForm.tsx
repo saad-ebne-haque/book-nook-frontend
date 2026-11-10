@@ -4,6 +4,7 @@ import { Check, Eye, EyeSlash } from "@gravity-ui/icons";
 import { Button, Description, FieldError, Form, Input, InputGroup, Label, TextField } from "@heroui/react";
 // import { useRouter } from "next/navigation";
 import { useState } from "react";
+import GoogleLogin from "../socialLogins/google/GoogleLogin";
 
 const LoginForm = () => {
     // const router = useRouter()
@@ -120,7 +121,10 @@ const LoginForm = () => {
                     </Button>
                 </div>
             </Form>
-
+            <p className="my-2">
+                or
+            </p>
+            <GoogleLogin method="Login"></GoogleLogin>
         </>
     );
 };

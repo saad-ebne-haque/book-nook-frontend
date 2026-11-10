@@ -4,6 +4,7 @@ import { Check, Eye, EyeSlash } from "@gravity-ui/icons";
 import { Button, Description, FieldError, Form, Input, InputGroup, Label, TextField } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import GoogleLogin from "../socialLogins/google/GoogleLogin";
 
 
 const RegistrationForm = () => {
@@ -33,7 +34,7 @@ const RegistrationForm = () => {
                     form.reset();
                     setPassword("");
                     router.push('/')
-                    console.log(`Registration success`)
+                    alert(`Registration success`)
                 },
                 onError(err) {
                     alert(err.error.message)
@@ -180,6 +181,9 @@ const RegistrationForm = () => {
                     </Button>
                 </div>
             </Form>
+            <p className="mt-2">or</p>
+            <GoogleLogin method="Register"></GoogleLogin>
+
         </>
     );
 };
