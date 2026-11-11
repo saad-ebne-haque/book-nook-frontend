@@ -1,11 +1,15 @@
 import LoginForm from "@/components/pages/auth/loginPage/LoginForm";
+import { Suspense } from "react";
 
 const RegisterPage = () => {
 
 
     return (
         <>
-            <LoginForm></LoginForm>
+            <Suspense>
+
+                <LoginForm></LoginForm>
+            </Suspense>
         </>
     );
 };

@@ -9,4 +9,5 @@ export interface Book {
     totalCopies: number;
     availableCopies: number;
     language: string;
+    addedBy: string;
 }

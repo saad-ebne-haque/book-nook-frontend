@@ -1,13 +1,17 @@
 'use client';
+
 import { authClient } from "@/lib/auth-client";
 import { Check, Eye, EyeSlash } from "@gravity-ui/icons";
 import { Button, Description, FieldError, Form, Input, InputGroup, Label, TextField } from "@heroui/react";
-// import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import GoogleLogin from "../socialLogins/google/GoogleLogin";
 
 const LoginForm = () => {
-    // const router = useRouter()
+    const searchParams = useSearchParams();
+    const requestedUrl = searchParams.get("callbackUrl") || '/';
+
+
     const [isVisible, setIsVisible] = useState(false);
 
     const onSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
@@ -16,24 +20,21 @@ const LoginForm = () => {
         const formData = new FormData(form);
         const data: Record<string, string> = {};
 
-        // Convert FormData to plain object
         formData.forEach((value, key) => {
             data[key] = value.toString();
         });
 
         const { data: resData, error } = await authClient.signIn.email({
-
             email: data.email,
             password: data.password,
-            callbackURL: "/",
+            callbackURL: requestedUrl,
             fetchOptions: {
                 onSuccess: () => {
                     form.reset();
-
-                    alert(`login success`)
+                    alert(`login success`);
                 },
                 onError(err) {
-                    alert(err.error.message)
+                    alert(err.error.message);
                 }
             }
         });
@@ -43,20 +44,17 @@ const LoginForm = () => {
         } else {
             console.log(error);
         }
-
     };
 
     return (
         <>
             <Form className="flex w-96 flex-col gap-4" onSubmit={onSubmit}>
-
-
                 <TextField
                     isRequired
                     name="email"
                     type="email"
                     validate={(value) => {
-                        if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) {
+                        if (!/^[A-Z0-9.\_%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) {
                             return "Please enter a valid email address";
                         }
                         return null;
@@ -67,11 +65,9 @@ const LoginForm = () => {
                     <FieldError />
                 </TextField>
 
-
-
                 <TextField
                     isRequired
-                    className="w-full "
+                    className="w-full"
                     name="password"
                     validate={(value) => {
                         if (value.length < 6) {
@@ -89,10 +85,9 @@ const LoginForm = () => {
                     <Label>Password</Label>
                     <InputGroup>
                         <InputGroup.Input
-                            className="w-full "
+                            className="w-full"
                             type={isVisible ? "text" : "password"}
                             placeholder="Enter your password"
-
                         />
                         <InputGroup.Suffix className="pe-0">
                             <Button
@@ -110,7 +105,6 @@ const LoginForm = () => {
                     <FieldError />
                 </TextField>
 
-
                 <div className="flex gap-2">
                     <Button type="submit">
                         <Check />
@@ -121,9 +115,8 @@ const LoginForm = () => {
                     </Button>
                 </div>
             </Form>
-            <p className="my-2">
-                or
-            </p>
+
+            <p className="my-2">or</p>
             <GoogleLogin method="Login"></GoogleLogin>
         </>
     );
