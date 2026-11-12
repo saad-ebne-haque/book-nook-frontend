@@ -2,20 +2,20 @@ import BookDetailsPageContent from "@/components/pages/books/bookDetailsPage/Boo
 import { Suspense } from "react";
 
 
-export interface BookDetailsPageProps {
+/* export interface BookDetailsPageProps {
     params: Promise<{ id: string }>;
-}
+} */
 
 
 
 
-const BookDetailsPage = ({ params }: BookDetailsPageProps) => {
+const BookDetailsPage = (/* { params }: BookDetailsPageProps */) => {
 
 
     return (
         <>
             <Suspense>
-                <BookDetailsPageContent params={params}></BookDetailsPageContent>
+                <BookDetailsPageContent /* params={params} */></BookDetailsPageContent>
             </Suspense>
 
         </>

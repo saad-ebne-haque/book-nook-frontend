@@ -66,21 +66,23 @@ const NavbarContent = () => {
                         </div>
                     </div>
                     <ul className="hidden items-center gap-4 md:flex">
-                        {menuItems.map((item) => {
-                            const currentPage = pathname === item.href;
+                        {isPending ? <>Loading......</> : <>
+                            {menuItems.map((item) => {
+                                const currentPage = pathname === item.href;
 
-                            return (
-                                <li key={item.name} className={`${!item.isVisible && 'hidden'}`}>
-                                    <Link
-                                        href={item.href}
-                                        className={`font-medium ${currentPage ? "text-accent" : "text-foreground"}`}
-                                        aria-current={currentPage ? "page" : undefined}
-                                    >
-                                        {item.name}
-                                    </Link>
-                                </li>
-                            )
-                        })}
+                                return (
+                                    <li key={item.name} className={`${!item.isVisible && 'hidden'}`}>
+                                        <Link
+                                            href={item.href}
+                                            className={`font-medium ${currentPage ? "text-accent" : "text-foreground"}`}
+                                            aria-current={currentPage ? "page" : undefined}
+                                        >
+                                            {item.name}
+                                        </Link>
+                                    </li>
+                                )
+                            })}
+                        </>}
                     </ul>
                     {
                         isPending ?

@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Card, Button, Chip, Link } from "@heroui/react";
 import Image from "next/image";
 import { Book } from "@/types/bookType";
