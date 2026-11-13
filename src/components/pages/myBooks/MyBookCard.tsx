@@ -65,7 +65,7 @@ export default function MyBookCard({ book }: MyBookCardProps) {
                 </div>
 
                 {/* Card Footer */}
-                <div className="w-full pt-3 mt-auto">
+                <div className="w-full pt-3 mt-auto space-x-2">
                     <EditBook book={book}></EditBook>
                     <DeleteBook book={book}></DeleteBook>
                 </div>

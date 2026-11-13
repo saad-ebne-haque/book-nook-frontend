@@ -8,6 +8,7 @@ import { Book } from "@/types/bookType";
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import MyBookMod from "./MyBookMod";
+import BorrowBookModal from "./BorrowThisBookModal";
 
 
 
@@ -122,13 +123,7 @@ export default function BookDetailsPageContent() {
                                             <MyBookMod book={book}></MyBookMod>
                                         </>
                                         :
-                                        <Button
-                                            className="w-full bg-primary text-white font-medium"
-                                            size="lg"
-                                            isDisabled={book.availableCopies <= 0}
-                                        >
-                                            {book.availableCopies > 0 ? "Borrow This Book" : "Out of Stock"}
-                                        </Button>
+                                        <BorrowBookModal book={book}></BorrowBookModal>
                             }
                         </div>
                     </div>
