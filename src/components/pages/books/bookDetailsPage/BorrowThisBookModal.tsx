@@ -1,19 +1,11 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
-import { Book } from "@/types/bookType";
-import {
-    Button,
-    Input,
-    Label,
-    Modal,
-    Surface,
-    TextField,
-    toast,
-} from "@heroui/react";
+import { BookOpen } from "@gravity-ui/icons";
+import type { Book } from "@/types/bookType";
+import { Button, Input, Label, Modal, TextField, toast, useOverlayState } from "@heroui/react";
 import Image from "next/image";
-
-import { FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 
 export interface BorrowBookModalProps {
     book: Book;
@@ -21,20 +13,18 @@ export interface BorrowBookModalProps {
 }
 
 export default function BorrowBookModal({ book, onBorrowed }: BorrowBookModalProps) {
-
-    const { data } = authClient.useSession();
-
-    const name = data?.user.name;
-    const email = data?.user.email;
-
+    const { data: session } = authClient.useSession();
+    const modalState = useOverlayState();
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const name = session?.user.name;
+    const email = session?.user.email;
     const todayDate = new Date().toISOString().split("T")[0];
     const { _id, ...bookData } = book;
+    const isAvailable = book.availableCopies > 0;
 
-    const handleBorrowBook = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const form = e.currentTarget;
-
-        const formData = new FormData(form);
+    const handleBorrowBook = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
         const data = Object.fromEntries(formData.entries());
         const borrowedBookData = {
             ...bookData,
@@ -45,61 +35,72 @@ export default function BorrowBookModal({ book, onBorrowed }: BorrowBookModalPro
             bookId: _id,
         };
 
+        setIsSubmitting(true);
+
         try {
-            const req = await fetch(`${process.env.NEXT_PUBLIC_API}/borrowed-books`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API}/borrows`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(borrowedBookData),
             });
+            const result = await response.json();
 
-            const res = await req.json();
-            if (!req.ok || !res.success) {
-                toast.danger(res.message || "Failed to borrow this book.");
+            if (!response.ok || !result.success) {
+                toast.danger(result.message || "Failed to borrow this book.");
                 return;
             }
 
             toast.success("Book borrowed successfully.");
             onBorrowed();
+            modalState.close();
         } catch (error) {
             toast.danger(
                 error instanceof Error ? error.message : "Failed to borrow this book."
             );
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     return (
-        <Modal>
+        <Modal state={modalState}>
             <Button
-                variant="primary"
-                size="lg"
-                className="w-full font-semibold shadow-md"
+                onPress={modalState.open}
+                isDisabled={!isAvailable}
+                className={`min-h-12 w-full rounded-full font-semibold shadow-sm transition-colors ${
+                    isAvailable
+                        ? "bg-[#315c4d] text-white hover:bg-[#25483c]"
+                        : "bg-[#eee8dc] text-[#85867c]"
+                }`}
             >
-                Borrow This Book
+                {isAvailable && <BookOpen aria-hidden="true" className="size-4" />}
+                {isAvailable ? "Borrow this book" : "Currently unavailable"}
             </Button>
 
-
-            <Modal.Backdrop className="overflow-y-auto">
-                <Modal.Container placement="auto">
-
-                    <Modal.Dialog className="flex max-h-[90dvh] w-full flex-col overflow-hidden rounded-2xl shadow-2xl sm:max-w-md">
-
+            <Modal.Backdrop
+                isOpen={modalState.isOpen}
+                onOpenChange={modalState.setOpen}
+                className="backdrop-blur-sm"
+            >
+                <Modal.Container placement="center">
+                    <Modal.Dialog className="flex max-h-[90dvh] w-full flex-col overflow-hidden rounded-[1.75rem] border border-[#e9e2d5] bg-[#fffdf9] shadow-[0_24px_70px_rgba(41,43,37,0.22)] sm:max-w-lg">
                         <Modal.CloseTrigger />
 
-                        {/* Header */}
-                        <Modal.Header className="flex flex-col gap-1 border-b border-default-200 bg-default-50 px-5 py-5">
-                            <Modal.Heading className="text-xl font-bold">
-                                Borrow Book
+                        <Modal.Header className="border-b border-[#eee8dc] px-5 py-5 sm:px-7">
+                            <p className="text-[10px] font-bold tracking-[0.2em] text-[#74806d]">
+                                BOOKNOOK BORROW REQUEST
+                            </p>
+                            <Modal.Heading className="mt-2 font-serif text-2xl font-semibold text-[#292b25]">
+                                Borrow this book
                             </Modal.Heading>
-
-                            <p className="text-sm text-default-500">
-                                Fill in the details below to borrow this book.
+                            <p className="mt-1 text-sm leading-6 text-[#74756c]">
+                                Confirm your details and choose an estimated return date.
                             </p>
 
-                            {/* Book Information */}
-                            <div className="mt-3 flex items-center gap-4 rounded-xl border border-default-200 bg-background p-3">
-                                <div className="relative h-20 w-14 flex-shrink-0 overflow-hidden rounded-lg bg-default-100 shadow-sm">
+                            <div className="mt-4 flex items-center gap-4 rounded-2xl border border-[#e9e2d5] bg-[#f7f5ef] p-3">
+                                <div className="relative h-20 w-14 shrink-0 overflow-hidden rounded-lg bg-[#eee8dc] shadow-sm">
                                     <Image
                                         src={book.image}
                                         alt={book.title}
@@ -108,121 +109,72 @@ export default function BorrowBookModal({ book, onBorrowed }: BorrowBookModalPro
                                         sizes="56px"
                                     />
                                 </div>
-
                                 <div className="min-w-0 flex-1">
-                                    <h4 className="line-clamp-2 font-semibold text-foreground">
+                                    <h3 className="line-clamp-2 font-serif font-semibold text-[#292b25]">
                                         {book.title}
-                                    </h4>
-
-                                    <p className="mt-1 text-sm text-default-500">
-                                        by{" "}
-                                        <span className="font-medium text-default-700">
-                                            {book.author}
-                                        </span>
+                                    </h3>
+                                    <p className="mt-1 truncate text-sm text-[#74756c]">
+                                        By {book.author}
                                     </p>
-
-                                    <p className="mt-2 text-xs text-default-500">
-                                        Available Copies: {book.availableCopies}
+                                    <p className="mt-2 text-xs font-semibold text-[#315c4d]">
+                                        {book.availableCopies} {book.availableCopies === 1 ? "copy" : "copies"} available
                                     </p>
                                 </div>
                             </div>
                         </Modal.Header>
 
-                        {/* Form */}
                         <form className="flex min-h-0 flex-1 flex-col" onSubmit={handleBorrowBook}>
+                            <Modal.Body className="min-h-0 flex-1 space-y-4 overflow-y-auto px-5 py-5 sm:px-7">
+                                <TextField name="name" defaultValue={name} className="w-full">
+                                    <Label className="font-medium text-[#464940]">Your name</Label>
+                                    <Input readOnly autoComplete="name" className="bg-[#f7f5ef]" />
+                                </TextField>
 
-                            <Modal.Body className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
-                                <Surface
-                                    variant="default"
-                                    className="rounded-xl border border-default-200 p-4"
+                                <TextField name="email" type="email" defaultValue={email} className="w-full">
+                                    <Label className="font-medium text-[#464940]">Your email</Label>
+                                    <Input readOnly autoComplete="email" className="bg-[#f7f5ef]" />
+                                </TextField>
+
+                                <TextField
+                                    name="borrowDate"
+                                    type="date"
+                                    defaultValue={todayDate}
+                                    className="w-full"
                                 >
-                                    <div className="flex flex-col gap-5">
+                                    <Label className="font-medium text-[#464940]">Borrow date</Label>
+                                    <Input readOnly className="bg-[#f7f5ef]" />
+                                </TextField>
 
-                                        {/* Name */}
-                                        <TextField
-                                            className="w-full"
-                                            name="name"
-                                            defaultValue={name}
-                                        >
-                                            <Label className="font-medium">
-                                                Your Name
-                                            </Label>
-                                            <Input
-                                                readOnly
-                                                className="bg-default-100"
-                                            />
-                                        </TextField>
-
-                                        {/* Email */}
-                                        <TextField
-                                            className="w-full"
-                                            name="email"
-                                            type="email"
-                                            defaultValue={email}
-                                        >
-                                            <Label className="font-medium">
-                                                Your Email
-                                            </Label>
-                                            <Input
-                                                readOnly
-                                                className="bg-default-100"
-                                            />
-                                        </TextField>
-
-                                        {/* Borrow Date */}
-                                        <TextField
-                                            className="w-full"
-                                            name="borrowDate"
-                                            type="date"
-                                            defaultValue={todayDate}
-                                        >
-                                            <Label className="font-medium">
-                                                Borrow Date
-                                            </Label>
-                                            <Input
-                                                readOnly
-                                                className="bg-default-100"
-                                            />
-                                        </TextField>
-
-                                        {/* Return Date */}
-                                        <TextField
-                                            className="w-full"
-                                            name="returnDate"
-                                            type="date"
-                                            isRequired
-                                        >
-                                            <Label className="font-medium">
-                                                Estimated Return Date
-                                            </Label>
-                                            <Input />
-                                        </TextField>
-
-                                    </div>
-                                </Surface>
+                                <TextField
+                                    isRequired
+                                    name="returnDate"
+                                    type="date"
+                                    className="w-full"
+                                >
+                                    <Label className="font-medium text-[#464940]">
+                                        Estimated return date
+                                    </Label>
+                                    <Input min={todayDate} />
+                                </TextField>
                             </Modal.Body>
 
-
-                            <Modal.Footer className="shrink-0 border-t border-default-200 bg-default-50 px-5 py-4">
+                            <Modal.Footer className="shrink-0 border-t border-[#eee8dc] bg-[#fffdf9] px-5 py-4 sm:px-7">
                                 <Button
                                     slot="close"
                                     variant="outline"
-                                    className="font-medium"
+                                    className="rounded-full border-[#dce4da] font-medium text-[#315c4d]"
                                 >
                                     Cancel
                                 </Button>
-
                                 <Button
-                                    slot="close"
-                                    variant="primary"
                                     type="submit"
-                                    className="font-semibold shadow-sm"
+                                    isDisabled={isSubmitting || !isAvailable}
+                                    className="rounded-full bg-[#315c4d] font-semibold text-white hover:bg-[#25483c]"
                                 >
-                                    Confirm Borrow
+                                    {isSubmitting ? "Submitting..." : "Confirm borrow"}
                                 </Button>
                             </Modal.Footer>
                         </form>
-
                     </Modal.Dialog>
                 </Modal.Container>
             </Modal.Backdrop>

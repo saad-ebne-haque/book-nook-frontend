@@ -12,12 +12,8 @@ interface ReturnConfirmModalProps {
 const ReturnConfirmModal = ({ borrowedBook, onReturned }: ReturnConfirmModalProps) => {
     const handleReturnBook = async () => {
         try {
-            const req = await fetch(`${process.env.NEXT_PUBLIC_API}/borrowed-books/${borrowedBook._id}`, {
+            const req = await fetch(`${process.env.NEXT_PUBLIC_API}/borrows/${borrowedBook._id}`, {
                 method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ bookId: borrowedBook.bookId }),
             });
             const res = await req.json();
 
