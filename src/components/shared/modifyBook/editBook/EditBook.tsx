@@ -5,6 +5,7 @@ import type { Book } from "@/types/bookType";
 import { Button, Input, Label, Modal, Surface, TextArea, TextField, toast, useOverlayState } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { authenticatedFetch } from "@/lib/api-client";
 
 export interface EditBookProps {
     book: Book;
@@ -25,7 +26,7 @@ export default function EditBook({ book, compact = false, onUpdated }: EditBookP
         setIsSaving(true);
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API}/books/${book._id}`, {
+            const response = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API}/books/${book._id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

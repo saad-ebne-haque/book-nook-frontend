@@ -8,6 +8,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { Book } from "@/types/bookType";
 import { authClient } from "@/lib/auth-client";
+import { authenticatedFetch } from "@/lib/api-client";
 import BorrowBookModal from "./BorrowThisBookModal";
 import MyBookMod from "./MyBookMod";
 
@@ -42,7 +43,7 @@ export default function BookDetailsPageContent() {
     useEffect(() => {
         let isCurrent = true;
 
-        fetch(`${process.env.NEXT_PUBLIC_API}/books/${id}`)
+        authenticatedFetch(`${process.env.NEXT_PUBLIC_API}/books/${id}`)
             .then(async (res) => {
                 const response = await res.json();
                 if (!res.ok || !response.success) {

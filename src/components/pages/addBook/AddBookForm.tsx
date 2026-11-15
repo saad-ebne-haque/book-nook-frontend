@@ -1,6 +1,7 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
+import { authenticatedFetch } from "@/lib/api-client";
 import {
     BookOpen,
 } from "@gravity-ui/icons";
@@ -67,7 +68,7 @@ export default function AddBookForm() {
         setIsSubmitting(true);
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API}/books`, {
+            const response = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API}/books`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

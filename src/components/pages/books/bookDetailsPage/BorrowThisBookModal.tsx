@@ -1,6 +1,7 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
+import { authenticatedFetch } from "@/lib/api-client";
 import { BookOpen } from "@gravity-ui/icons";
 import type { Book } from "@/types/bookType";
 import { Button, Input, Label, Modal, TextField, toast, useOverlayState } from "@heroui/react";
@@ -38,7 +39,7 @@ export default function BorrowBookModal({ book, onBorrowed }: BorrowBookModalPro
         setIsSubmitting(true);
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API}/borrows`, {
+            const response = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API}/borrows`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

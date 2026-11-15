@@ -6,12 +6,20 @@ import MyBookCard from "./MyBookCard";
 
 
 export default async function MyBooksPageContent() {
-    const session = await auth.api.getSession({
-        headers: await headers()
-    });
-    const email = session?.user.email;
+    const requestHeaders = await headers();
+    const session = await auth.api.getSession({ headers: requestHeaders });
+    if (!session?.user.email) {
+        throw new Error("An authenticated user is required to load your books.");
+    }
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/my-books/${email}`)
+    const { token } = await auth.api.getToken({ headers: requestHeaders });
+    const email = session.user.email;
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/my-books/${encodeURIComponent(email)}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
     const response = await res.json();
     if (!res.ok || !response.success) {
         throw new Error(response.message || "Failed to fetch your books");

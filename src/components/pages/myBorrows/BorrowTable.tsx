@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { authenticatedFetch } from "@/lib/api-client";
 import { BorrowedBookType } from "@/types/borrowedBookType";
 import ReturnConfirmModal from "./ReturnConfirmModal";
 
@@ -44,8 +45,8 @@ const BorrowTable = () => {
 
         const fetchBorrowedBooks = async () => {
             try {
-                const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_API}/borrows?borrowerEmail=${encodeURIComponent(userEmail)}`
+                const response = await authenticatedFetch(
+                    `${process.env.NEXT_PUBLIC_API}/borrows`
                 );
                 const result = await response.json();
 

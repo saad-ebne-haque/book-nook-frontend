@@ -5,6 +5,7 @@ import type { Book } from "@/types/bookType";
 import { Button, Modal, toast, useOverlayState } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { authenticatedFetch } from "@/lib/api-client";
 
 export interface DeleteBookProps {
     book: Book;
@@ -21,7 +22,7 @@ export default function DeleteBook({ book, compact = false, onDeleted }: DeleteB
         setIsDeleting(true);
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API}/books/${book._id}`, {
+            const response = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API}/books/${book._id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

@@ -3,6 +3,7 @@
 import { Button, Modal, toast } from "@heroui/react";
 import { TrashBin, BookOpen } from "@gravity-ui/icons";
 import { BorrowedBookType } from "@/types/borrowedBookType";
+import { authenticatedFetch } from "@/lib/api-client";
 
 interface ReturnConfirmModalProps {
     borrowedBook: BorrowedBookType;
@@ -12,7 +13,7 @@ interface ReturnConfirmModalProps {
 const ReturnConfirmModal = ({ borrowedBook, onReturned }: ReturnConfirmModalProps) => {
     const handleReturnBook = async () => {
         try {
-            const req = await fetch(`${process.env.NEXT_PUBLIC_API}/borrows/${borrowedBook._id}`, {
+            const req = await authenticatedFetch(`${process.env.NEXT_PUBLIC_API}/borrows/${borrowedBook._id}`, {
                 method: "DELETE",
             });
             const res = await req.json();
