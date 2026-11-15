@@ -71,6 +71,12 @@ export default function BookDetailsPageContent() {
 
     const isOwner = !isPending && userEmail === book.addedBy;
     const isAvailable = book.availableCopies > 0;
+    const addedByName = book.addedByName?.trim();
+    const addedByEmail = book.addedBy?.trim();
+    const addedDate = book.createdAt ? new Date(book.createdAt) : null;
+    const formattedAddedDate = addedDate && !Number.isNaN(addedDate.getTime())
+        ? new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(addedDate)
+        : null;
     const reloadBook = () => {
         setBook(null);
         setRefreshKey((currentKey) => currentKey + 1);
@@ -175,6 +181,35 @@ export default function BookDetailsPageContent() {
                             <p className={`mt-2 text-sm font-semibold ${isAvailable ? "text-[#315c4d]" : "text-[#9b4938]"}`}>
                                 {book.availableCopies} {book.availableCopies === 1 ? "copy" : "copies"}
                             </p>
+                        </div>
+                    </div>
+
+                    <div className="mt-4 flex items-start gap-3 rounded-2xl border border-[#dce4da] bg-[#f1f5ef] p-4">
+                        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white text-[#315c4d]">
+                            <Person aria-hidden="true" className="size-5" />
+                        </span>
+                        <div className="min-w-0">
+                            <p className="text-xs font-medium text-[#74806d]">Added by</p>
+                            {addedByName && (
+                                <p className="mt-1 break-words text-sm font-semibold text-[#292b25]">
+                                    {addedByName}
+                                </p>
+                            )}
+                            {addedByEmail ? (
+                                <p className="mt-0.5 break-all text-xs text-[#74756c]">
+                                    <span className="font-medium text-[#464940]">Email: </span>
+                                    {addedByEmail}
+                                </p>
+                            ) : !addedByName ? (
+                                <p className="mt-1 text-sm text-[#74756c]">
+                                    Contributor information unavailable
+                                </p>
+                            ) : null}
+                            {formattedAddedDate && (
+                                <p className="mt-1 text-xs text-[#74756c]">
+                                    Added {formattedAddedDate}
+                                </p>
+                            )}
                         </div>
                     </div>
 

@@ -10,4 +10,6 @@ export interface Book {
     availableCopies: number;
     language: string;
     addedBy: string;
+    addedByName?: string | null;
+    createdAt?: string;
 }
