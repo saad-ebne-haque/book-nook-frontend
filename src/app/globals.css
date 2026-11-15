@@ -1,2 +1,19 @@
 @import "tailwindcss";
-@import "@heroui/styles"; 
+@import "@heroui/styles";
+
+.book-nook-banner .swiper-pagination {
+  bottom: 1.4rem !important;
+  padding-left: clamp(1.5rem, 5vw, 5rem);
+  text-align: left;
+}
+
+.book-nook-banner .swiper-pagination-bullet {
+  background: #25251f;
+  opacity: 0.3;
+}
+
+.book-nook-banner .swiper-pagination-bullet-active {
+  width: 1.5rem;
+  border-radius: 9999px;
+  opacity: 1;
+}
