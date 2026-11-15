@@ -68,23 +68,10 @@ export default function BookCard({ book }: BookCardProps) {
                 </div>
 
                 <Link href={`/books/${book._id}`} className="mt-5 w-full no-underline">
-                    <Button
-                        className={`w-full rounded-full font-semibold transition-colors ${
-                            isAvailable
-                                ? "bg-[#315c4d] text-white hover:bg-[#25483c]"
-                                : "bg-[#eee8dc] text-[#85867c]"
-                        }`}
-                        isDisabled={!isAvailable}
-                    >
-                        {isAvailable ? (
-                            <>
-                                <BookOpen aria-hidden="true" className="size-4" />
-                                View book details
-                                <ArrowRight aria-hidden="true" className="size-4" />
-                            </>
-                        ) : (
-                            "Currently unavailable"
-                        )}
+                    <Button className="w-full rounded-full bg-[#315c4d] font-semibold text-white transition-colors hover:bg-[#25483c]">
+                        <BookOpen aria-hidden="true" className="size-4" />
+                        View book details
+                        <ArrowRight aria-hidden="true" className="size-4" />
                     </Button>
                 </Link>
             </div>
