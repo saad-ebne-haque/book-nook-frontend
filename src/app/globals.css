@@ -17,3 +17,33 @@
   border-radius: 9999px;
   opacity: 1;
 }
+
+.book-nook-toast .toast {
+  border: 1px solid #e9e2d5;
+  border-radius: 1.25rem;
+  background-color: #fffdf9;
+  color: #292b25;
+  box-shadow: 0 16px 40px rgba(54, 48, 37, 0.16);
+}
+
+.book-nook-toast .toast__description {
+  color: #74756c;
+}
+
+.book-nook-toast .toast--success {
+  border-color: #cbd9c9;
+}
+
+.book-nook-toast .toast--success .toast__title,
+.book-nook-toast .toast--success .toast__indicator {
+  color: #315c4d;
+}
+
+.book-nook-toast .toast--danger {
+  border-color: #e8c8bc;
+}
+
+.book-nook-toast .toast--danger .toast__title,
+.book-nook-toast .toast--danger .toast__indicator {
+  color: #9b4938;
+}

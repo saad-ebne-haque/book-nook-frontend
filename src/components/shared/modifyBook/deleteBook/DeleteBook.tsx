@@ -1,6 +1,6 @@
 'use client';
 import { Book } from "@/types/bookType"
-import { Button, Modal } from "@heroui/react"
+import { Button, Modal, toast } from "@heroui/react"
 import { useRouter } from "next/navigation";
 
 
@@ -13,19 +13,27 @@ export default function DeleteBook({ book }: DeleteBookProps) {
     const router = useRouter()
 
     const handleDelete = async () => {
-        const req = await fetch(`${process.env.NEXT_PUBLIC_API}/books/${book._id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+        try {
+            const req = await fetch(`${process.env.NEXT_PUBLIC_API}/books/${book._id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
 
-        });
-        const result = await req.json();
-        console.log(result);
-        if (result.success && result.data.deletedCount > 0) {
+            });
+            const result = await req.json();
+            if (!req.ok || !result.success) {
+                toast.danger(result.message || "Failed to delete the book.");
+                return;
+            }
+
+            toast.success("Book deleted successfully.");
             router.refresh();
-            alert(`Change Successfull`);
             document.getElementById("close-modal-btn")?.click();
+        } catch (error) {
+            toast.danger(
+                error instanceof Error ? error.message : "Failed to delete the book."
+            );
         }
     }
     return (

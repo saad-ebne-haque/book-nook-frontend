@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toast } from "@heroui/react";
 import "./globals.css";
 import Navbar from "@/components/shared/navbar/Navbar";
 import Footer from "@/components/shared/footer/Footer";
@@ -31,6 +32,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <Footer />
+        <Toast.Provider
+          aria-label="Notifications"
+          placement="top end"
+          className="book-nook-toast"
+          width="min(26rem, calc(100vw - 2rem))"
+        />
       </body>
     </html>
   );

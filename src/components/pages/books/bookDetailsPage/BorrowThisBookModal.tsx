@@ -9,19 +9,19 @@ import {
     Modal,
     Surface,
     TextField,
+    toast,
 } from "@heroui/react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 
 import { FormEvent } from "react";
 
 export interface BorrowBookModalProps {
     book: Book;
+    onBorrowed: () => void;
 }
 
-export default function BorrowBookModal({ book }: BorrowBookModalProps) {
+export default function BorrowBookModal({ book, onBorrowed }: BorrowBookModalProps) {
 
-    const router = useRouter();
     const { data } = authClient.useSession();
 
     const name = data?.user.name;
@@ -45,21 +45,27 @@ export default function BorrowBookModal({ book }: BorrowBookModalProps) {
             bookId: _id,
         };
 
-        const req = await fetch(`${process.env.NEXT_PUBLIC_API}/borrowed-books`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(borrowedBookData),
-        });
+        try {
+            const req = await fetch(`${process.env.NEXT_PUBLIC_API}/borrowed-books`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(borrowedBookData),
+            });
 
-        const res = await req.json();
-        console.log(res);
-        if (res.success) {
-            // router.refresh();
-            window.location.reload();
+            const res = await req.json();
+            if (!req.ok || !res.success) {
+                toast.danger(res.message || "Failed to borrow this book.");
+                return;
+            }
 
-
+            toast.success("Book borrowed successfully.");
+            onBorrowed();
+        } catch (error) {
+            toast.danger(
+                error instanceof Error ? error.message : "Failed to borrow this book."
+            );
         }
     };
 

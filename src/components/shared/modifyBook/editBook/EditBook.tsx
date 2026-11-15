@@ -1,6 +1,6 @@
 'use client'
 import { Book } from "@/types/bookType"
-import { Button, Input, Label, Modal, Surface, TextArea, TextField } from "@heroui/react"
+import { Button, Input, Label, Modal, Surface, TextArea, TextField, toast } from "@heroui/react"
 import { useRouter } from "next/navigation"
 
 export interface EditBookProps {
@@ -16,19 +16,27 @@ export default function EditBook({ book }: EditBookProps) {
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData.entries());
 
-        const req = await fetch(`${process.env.NEXT_PUBLIC_API}/books/${book._id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-        const result = await req.json();
-        console.log(result);
-        if (result.success && result.data.modifiedCount > 0) {
+        try {
+            const req = await fetch(`${process.env.NEXT_PUBLIC_API}/books/${book._id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await req.json();
+            if (!req.ok || !result.success) {
+                toast.danger(result.message || "Failed to update the book.");
+                return;
+            }
+
+            toast.success("Book updated successfully.");
             router.refresh();
-            alert(`Change Successfull`);
             document.getElementById("close-modal-btn")?.click();
+        } catch (error) {
+            toast.danger(
+                error instanceof Error ? error.message : "Failed to update the book."
+            );
         }
 
     };

@@ -9,6 +9,7 @@ import {
     TextArea,
     Select,
     ListBox,
+    toast,
 } from "@heroui/react";
 import { FormEvent } from "react";
 
@@ -30,17 +31,28 @@ export default function AddBookForm() {
         const submitedData = { ...data, addedBy: email, availableCopies: data.totalCopies };
 
 
-        const req = await fetch(`${process.env.NEXT_PUBLIC_API}/books`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(submitedData)
-        })
+        try {
+            const req = await fetch(`${process.env.NEXT_PUBLIC_API}/books`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(submitedData)
+            });
 
-        const result = await req.json();
+            const result = await req.json();
+            if (!req.ok || !result.success) {
+                toast.danger(result.message || "Failed to add the book.");
+                return;
+            }
 
-        console.log(result);
+            toast.success("Book added successfully.");
+            form.reset();
+        } catch (error) {
+            toast.danger(
+                error instanceof Error ? error.message : "Failed to add the book."
+            );
+        }
 
     }
 

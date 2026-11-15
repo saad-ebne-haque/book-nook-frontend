@@ -1,5 +1,5 @@
 import { authClient } from "@/lib/auth-client"
-import { Button } from "@heroui/react"
+import { Button, toast } from "@heroui/react"
 import Image from "next/image"
 
 export interface GoogleLoginProps {
@@ -12,25 +12,30 @@ export interface GoogleLoginProps {
 export default function GoogleLogin({ method, callbackURL, className, onError }: GoogleLoginProps) {
 
     const handleGoogleLogins = async () => {
+        try {
+            const { error } = await authClient.signIn.social({
+                provider: 'google',
+                callbackURL,
+            });
 
-        const { data, error } = await authClient.signIn.social({
-            provider: 'google',
-            callbackURL,
-            fetchOptions: {
-                onError(err) {
-                    if (onError) {
-                        onError(err.error.message)
-                    } else {
-                        alert(err.error.message)
-                    }
+            if (error) {
+                const message = error.message || "Google sign-in failed. Please try again.";
+                if (onError) {
+                    onError(message);
+                } else {
+                    toast.danger(message);
                 }
             }
-        });
+        } catch (error) {
+            const message = error instanceof Error
+                ? error.message
+                : "Google sign-in failed. Please try again.";
 
-        if (!error) {
-            console.log(data);
-        } else {
-            onError?.(error.message ?? "Google sign-in failed. Please try again.");
+            if (onError) {
+                onError(message);
+            } else {
+                toast.danger(message);
+            }
         }
 
     }

@@ -2,7 +2,7 @@
 
 import { authClient } from "@/lib/auth-client";
 import { Check, Eye, EyeSlash } from "@gravity-ui/icons";
-import { Button, FieldError, Form, Input, InputGroup, Label, TextField } from "@heroui/react";
+import { Button, FieldError, Form, Input, InputGroup, Label, TextField, toast } from "@heroui/react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import GoogleLogin from "../socialLogins/google/GoogleLogin";
@@ -12,13 +12,11 @@ const LoginForm = () => {
     const requestedUrl = searchParams.get("callbackUrl") || '/';
 
     const [isVisible, setIsVisible] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const onSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.currentTarget;
-        setErrorMessage("");
         setIsSubmitting(true);
         const formData = new FormData(form);
         const data: Record<string, string> = {};
@@ -38,10 +36,10 @@ const LoginForm = () => {
             });
 
             if (error) {
-                setErrorMessage(error.message || "We couldn't sign you in. Check your details and try again.");
+                toast.danger(error.message || "We couldn't sign you in. Check your details and try again.");
             }
         } catch (error) {
-            setErrorMessage(
+            toast.danger(
                 error instanceof Error
                     ? error.message
                     : "We couldn't sign you in. Please try again.",
@@ -54,11 +52,6 @@ const LoginForm = () => {
     return (
         <>
             <Form className="flex w-full flex-col gap-5" onSubmit={onSubmit}>
-                {errorMessage && (
-                    <p role="alert" className="rounded-xl border border-[#e8c8bc] bg-[#fbefeb] px-4 py-3 text-sm leading-5 text-[#9b4938]">
-                        {errorMessage}
-                    </p>
-                )}
                 <TextField
                     isRequired
                     name="email"
@@ -133,7 +126,7 @@ const LoginForm = () => {
                 <GoogleLogin
                     method="Continue"
                     callbackURL={requestedUrl}
-                    onError={setErrorMessage}
+                    onError={(message) => toast.danger(message)}
                     className="min-h-12 w-full rounded-full border-[#dce4da] bg-white font-semibold text-[#3d443b] hover:bg-[#f5f7f2]"
                 />
             </Form>

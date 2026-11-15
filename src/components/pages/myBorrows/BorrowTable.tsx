@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Table } from "@heroui/react";
+import { Card, Table, toast } from "@heroui/react";
 import Image from "next/image";
 import ReturnConfirmModal from "./ReturnConfirmModal";
 import { authClient } from "@/lib/auth-client";
@@ -11,41 +11,46 @@ import { BorrowedBookType } from "@/types/borrowedBookType";
 
 
 const BorrowTable = () => {
-    const [refresh, setRefresh] = useState(false);
-
     const session = authClient.useSession();
 
     const userEmail = session.data?.user.email;
 
     const [borrowedBooks, setBorrowedBooks] = useState<BorrowedBookType[]>([]);
 
+    const handleBookReturned = (bookId: string) => {
+        setBorrowedBooks((currentBooks) =>
+            currentBooks.filter((book) => book._id !== bookId)
+        );
+    };
+
     useEffect(() => {
+        if (!userEmail) {
+            return;
+        }
+
         const fetchBorrowedBooks = async () => {
             try {
                 const res = await fetch(
                     `${process.env.NEXT_PUBLIC_API}/borrowed-books?borrowerEmail=${userEmail}`
                 );
 
-                if (!res.ok) {
-                    throw new Error("Failed to fetch borrowed books");
-                }
-
                 const response = await res.json();
                 if (!res.ok || !response.success) {
                     throw new Error(response.message || "Failed to fetch borrowed books");
                 }
-                if (response.data.length > 0) {
-                    setRefresh(!refresh);
-                }
                 setBorrowedBooks(response.data);
 
             } catch (error) {
-                console.error("Error fetching borrowed books:", error);
+                toast.danger(
+                    error instanceof Error
+                        ? error.message
+                        : "Failed to fetch borrowed books."
+                );
             }
         };
 
         fetchBorrowedBooks();
-    }, [userEmail, refresh]);
+    }, [userEmail]);
 
 
 
@@ -97,7 +102,10 @@ const BorrowTable = () => {
                                         <Table.Cell>{book.returnDate}</Table.Cell>
 
                                         <Table.Cell>
-                                            <ReturnConfirmModal borrowedBook={book} />
+                                            <ReturnConfirmModal
+                                                borrowedBook={book}
+                                                onReturned={() => handleBookReturned(book._id)}
+                                            />
                                         </Table.Cell>
                                     </Table.Row>
                                 ))}

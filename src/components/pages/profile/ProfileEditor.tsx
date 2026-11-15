@@ -2,37 +2,13 @@
 
 import { authClient } from "@/lib/auth-client";
 import { PencilToSquare } from "@gravity-ui/icons";
-import { Button, Description, FieldError, Form, Input, Label, Modal, TextField } from "@heroui/react";
+import { Button, Description, FieldError, Form, Input, Label, Modal, TextField, toast } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 
 interface ProfileEditorProps {
     name: string;
     image: string | null;
-}
-
-interface Feedback {
-    type: "error" | "success";
-    message: string;
-}
-
-function FeedbackMessage({ feedback }: { feedback: Feedback | null }) {
-    if (!feedback) {
-        return null;
-    }
-
-    return (
-        <p
-            role={feedback.type === "error" ? "alert" : "status"}
-            className={`rounded-xl px-4 py-3 text-sm ${
-                feedback.type === "error"
-                    ? "border border-[#e8c8bc] bg-[#fbefeb] text-[#9b4938]"
-                    : "border border-[#dce4da] bg-[#f1f5ef] text-[#315c4d]"
-            }`}
-        >
-            {feedback.message}
-        </p>
-    );
 }
 
 function isOptionalHttpsUrl(value: string) {
@@ -53,8 +29,6 @@ export default function ProfileEditor({ name: currentName, image: currentImage }
     const [image, setImage] = useState(currentImage ?? "");
     const [isSavingProfile, setIsSavingProfile] = useState(false);
     const [isSavingPassword, setIsSavingPassword] = useState(false);
-    const [profileFeedback, setProfileFeedback] = useState<Feedback | null>(null);
-    const [passwordFeedback, setPasswordFeedback] = useState<Feedback | null>(null);
 
     const handleProfileSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -62,16 +36,15 @@ export default function ProfileEditor({ name: currentName, image: currentImage }
         const updatedImage = image.trim();
 
         if (updatedName.length < 3) {
-            setProfileFeedback({ type: "error", message: "Name must be at least 3 characters." });
+            toast.danger("Name must be at least 3 characters.");
             return;
         }
 
         if (!isOptionalHttpsUrl(updatedImage)) {
-            setProfileFeedback({ type: "error", message: "Enter a valid HTTPS URL for your profile photo." });
+            toast.danger("Enter a valid HTTPS URL for your profile photo.");
             return;
         }
 
-        setProfileFeedback(null);
         setIsSavingProfile(true);
 
         try {
@@ -81,19 +54,18 @@ export default function ProfileEditor({ name: currentName, image: currentImage }
             });
 
             if (error) {
-                setProfileFeedback({ type: "error", message: error.message || "Unable to update your profile." });
+                toast.danger(error.message || "Unable to update your profile.");
                 return;
             }
 
             setName(updatedName);
             setImage(updatedImage);
-            setProfileFeedback({ type: "success", message: "Your profile has been updated." });
+            toast.success("Your profile has been updated.");
             router.refresh();
         } catch (error) {
-            setProfileFeedback({
-                type: "error",
-                message: error instanceof Error ? error.message : "Unable to update your profile.",
-            });
+            toast.danger(
+                error instanceof Error ? error.message : "Unable to update your profile."
+            );
         } finally {
             setIsSavingProfile(false);
         }
@@ -108,36 +80,31 @@ export default function ProfileEditor({ name: currentName, image: currentImage }
         const confirmPassword = String(formData.get("confirmPassword") ?? "");
 
         if (newPassword.length < 6 || !/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword)) {
-            setPasswordFeedback({
-                type: "error",
-                message: "New password must be at least 6 characters and include uppercase and lowercase letters.",
-            });
+            toast.danger("New password must be at least 6 characters and include uppercase and lowercase letters.");
             return;
         }
 
         if (newPassword !== confirmPassword) {
-            setPasswordFeedback({ type: "error", message: "New passwords do not match." });
+            toast.danger("New passwords do not match.");
             return;
         }
 
-        setPasswordFeedback(null);
         setIsSavingPassword(true);
 
         try {
             const { error } = await authClient.changePassword({ currentPassword, newPassword });
 
             if (error) {
-                setPasswordFeedback({ type: "error", message: error.message || "Unable to change your password." });
+                toast.danger(error.message || "Unable to change your password.");
                 return;
             }
 
             form.reset();
-            setPasswordFeedback({ type: "success", message: "Your password has been changed." });
+            toast.success("Your password has been changed.");
         } catch (error) {
-            setPasswordFeedback({
-                type: "error",
-                message: error instanceof Error ? error.message : "Unable to change your password.",
-            });
+            toast.danger(
+                error instanceof Error ? error.message : "Unable to change your password."
+            );
         } finally {
             setIsSavingPassword(false);
         }
@@ -201,7 +168,6 @@ export default function ProfileEditor({ name: currentName, image: currentImage }
                                         <FieldError />
                                     </TextField>
 
-                                    <FeedbackMessage feedback={profileFeedback} />
                                     <Button type="submit" isDisabled={isSavingProfile} className="w-full rounded-full bg-[#315c4d] font-semibold text-white hover:bg-[#25483c]">
                                         {isSavingProfile ? "Saving profile..." : "Save profile"}
                                     </Button>
@@ -239,7 +205,6 @@ export default function ProfileEditor({ name: currentName, image: currentImage }
                                         <FieldError />
                                     </TextField>
 
-                                    <FeedbackMessage feedback={passwordFeedback} />
                                     <Button type="submit" isDisabled={isSavingPassword} variant="outline" className="w-full rounded-full border-[#dce4da] font-semibold text-[#315c4d] hover:bg-[#f1f5ef]">
                                         {isSavingPassword ? "Changing password..." : "Change password"}
                                     </Button>

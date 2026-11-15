@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Card, Chip } from "@heroui/react";
+import { Button, Card, Chip, toast } from "@heroui/react";
 import { Person, Calendar, BookOpen, Globe } from "@gravity-ui/icons";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -35,7 +35,11 @@ export default function BookDetailsPageContent() {
                 setBook(response.data);
 
             })
-            .catch(err => console.error(err));
+            .catch((error) => {
+                toast.danger(
+                    error instanceof Error ? error.message : "Failed to load book details."
+                );
+            });
     }, [id]);
 
     if (book) {
@@ -126,7 +130,21 @@ export default function BookDetailsPageContent() {
                                             <MyBookMod book={book}></MyBookMod>
                                         </>
                                         :
-                                        <BorrowBookModal book={book}></BorrowBookModal>
+                                        <BorrowBookModal
+                                            book={book}
+                                            onBorrowed={() => {
+                                                setBook((currentBook) => {
+                                                    if (!currentBook) {
+                                                        return currentBook;
+                                                    }
+
+                                                    return {
+                                                        ...currentBook,
+                                                        availableCopies: currentBook.availableCopies - 1,
+                                                    };
+                                                });
+                                            }}
+                                        />
                             }
                         </div>
                     </div>

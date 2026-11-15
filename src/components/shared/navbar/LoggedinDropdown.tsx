@@ -8,6 +8,7 @@ import {
     Description,
     Dropdown,
     Label,
+    toast,
 } from "@heroui/react";
 import {
     Person,
@@ -25,14 +26,21 @@ export default function LoggedinDropdown({
     const router = useRouter();
 
     const handleSignOut = async () => {
-        await authClient.signOut({
-            fetchOptions: {
-                onSuccess() {
-                    router.refresh();
-                    router.push('/login');
-                }
+        try {
+            const { error } = await authClient.signOut();
+            if (error) {
+                toast.danger(error.message || "Failed to sign out.");
+                return;
             }
-        })
+
+            toast.success("You have signed out.");
+            router.refresh();
+            router.push('/login');
+        } catch (error) {
+            toast.danger(
+                error instanceof Error ? error.message : "Failed to sign out."
+            );
+        }
     };
 
 

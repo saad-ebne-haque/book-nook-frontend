@@ -1,17 +1,15 @@
 "use client";
 
-import { Button, Modal } from "@heroui/react";
+import { Button, Modal, toast } from "@heroui/react";
 import { TrashBin, BookOpen } from "@gravity-ui/icons";
 import { BorrowedBookType } from "@/types/borrowedBookType";
-import { useRouter } from "next/navigation";
 
 interface ReturnConfirmModalProps {
     borrowedBook: BorrowedBookType;
+    onReturned: () => void;
 }
 
-const ReturnConfirmModal = ({ borrowedBook }: ReturnConfirmModalProps) => {
-    const router = useRouter();
-
+const ReturnConfirmModal = ({ borrowedBook, onReturned }: ReturnConfirmModalProps) => {
     const handleReturnBook = async () => {
         try {
             const req = await fetch(`${process.env.NEXT_PUBLIC_API}/borrowed-books/${borrowedBook._id}`, {
@@ -21,19 +19,18 @@ const ReturnConfirmModal = ({ borrowedBook }: ReturnConfirmModalProps) => {
                 },
                 body: JSON.stringify({ bookId: borrowedBook.bookId }),
             });
-            if (!req.ok) {
-                throw new Error("Failed to return book");
-            }
             const res = await req.json();
 
-            if (res.success) {
-                // Refresh the page to update the borrowed books list
-                window.location.reload();
-                // router.refresh();
+            if (!req.ok || !res.success) {
+                throw new Error(res.message || "Failed to return book.");
             }
-            console.log(res);
+
+            toast.success("Book returned successfully.");
+            onReturned();
         } catch (error) {
-            console.error("Error returning book:", error);
+            toast.danger(
+                error instanceof Error ? error.message : "Failed to return book."
+            );
         }
     };
 
