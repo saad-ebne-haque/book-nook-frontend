@@ -12,7 +12,11 @@ export default async function MyBooksPageContent() {
     const email = session?.user.email;
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_API}/my-books/${email}`)
-    const myBooks: Book[] = await res.json();
+    const response = await res.json();
+    if (!res.ok || !response.success) {
+        throw new Error(response.message || "Failed to fetch your books");
+    }
+    const myBooks: Book[] = response.data;
 
 
     return (

@@ -27,9 +27,12 @@ export default function BookDetailsPageContent() {
 
     useEffect(() => {
         fetch(`${process.env.NEXT_PUBLIC_API}/books/${id}`)
-            .then(res => res.json())
-            .then(data => {
-                setBook(data);
+            .then(async (res) => {
+                const response = await res.json();
+                if (!res.ok || !response.success) {
+                    throw new Error(response.message || "Failed to fetch book");
+                }
+                setBook(response.data);
 
             })
             .catch(err => console.error(err));

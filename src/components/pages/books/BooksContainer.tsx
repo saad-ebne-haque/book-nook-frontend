@@ -4,7 +4,11 @@ import { Book } from "@/types/bookType";
 const BooksContainer = async () => {
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_API}/books`);
-    const books: Book[] = await res.json();
+    const response = await res.json();
+    if (!res.ok || !response.success) {
+        throw new Error(response.message || "Failed to fetch books");
+    }
+    const books: Book[] = response.data;
 
     return (
         <>

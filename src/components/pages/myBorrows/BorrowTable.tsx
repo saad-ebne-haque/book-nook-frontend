@@ -30,11 +30,14 @@ const BorrowTable = () => {
                     throw new Error("Failed to fetch borrowed books");
                 }
 
-                const data = await res.json();
-                if (data.length > 0) {
+                const response = await res.json();
+                if (!res.ok || !response.success) {
+                    throw new Error(response.message || "Failed to fetch borrowed books");
+                }
+                if (response.data.length > 0) {
                     setRefresh(!refresh);
                 }
-                setBorrowedBooks(data);
+                setBorrowedBooks(response.data);
 
             } catch (error) {
                 console.error("Error fetching borrowed books:", error);

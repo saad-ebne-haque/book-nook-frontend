@@ -22,7 +22,7 @@ export default function DeleteBook({ book }: DeleteBookProps) {
         });
         const result = await req.json();
         console.log(result);
-        if (result.deletedCount > 0) {
+        if (result.success && result.data.deletedCount > 0) {
             router.refresh();
             alert(`Change Successfull`);
             document.getElementById("close-modal-btn")?.click();

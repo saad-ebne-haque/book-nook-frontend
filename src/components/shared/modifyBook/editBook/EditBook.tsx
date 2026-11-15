@@ -25,7 +25,7 @@ export default function EditBook({ book }: EditBookProps) {
         });
         const result = await req.json();
         console.log(result);
-        if (result.modifiedCount > 0) {
+        if (result.success && result.data.modifiedCount > 0) {
             router.refresh();
             alert(`Change Successfull`);
             document.getElementById("close-modal-btn")?.click();
