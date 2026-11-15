@@ -11,6 +11,8 @@ import {
     TextField,
 } from "@heroui/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+
 import { FormEvent } from "react";
 
 export interface BorrowBookModalProps {
@@ -18,6 +20,8 @@ export interface BorrowBookModalProps {
 }
 
 export default function BorrowBookModal({ book }: BorrowBookModalProps) {
+
+    const router = useRouter();
     const { data } = authClient.useSession();
 
     const name = data?.user.name;
@@ -51,7 +55,12 @@ export default function BorrowBookModal({ book }: BorrowBookModalProps) {
 
         const res = await req.json();
         console.log(res);
+        if (res.success) {
+            // router.refresh();
+            window.location.reload();
 
+
+        }
     };
 
     return (
@@ -64,10 +73,10 @@ export default function BorrowBookModal({ book }: BorrowBookModalProps) {
                 Borrow This Book
             </Button>
 
-            {/* CHANGED: Backdrop scrollable করা হয়েছে */}
+
             <Modal.Backdrop className="overflow-y-auto">
                 <Modal.Container placement="auto">
-                    {/* CHANGED: Modal-এর maximum height এবং flex layout */}
+
                     <Modal.Dialog className="flex max-h-[90dvh] w-full flex-col overflow-hidden rounded-2xl shadow-2xl sm:max-w-md">
 
                         <Modal.CloseTrigger />
@@ -115,7 +124,7 @@ export default function BorrowBookModal({ book }: BorrowBookModalProps) {
 
                         {/* Form */}
                         <form className="flex min-h-0 flex-1 flex-col" onSubmit={handleBorrowBook}>
-                            {/* CHANGED: Body scrollable করা হয়েছে */}
+
                             <Modal.Body className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
                                 <Surface
                                     variant="default"
@@ -187,7 +196,7 @@ export default function BorrowBookModal({ book }: BorrowBookModalProps) {
                                 </Surface>
                             </Modal.Body>
 
-                            {/* CHANGED: Footer shrink হবে না, button visible থাকবে */}
+
                             <Modal.Footer className="shrink-0 border-t border-default-200 bg-default-50 px-5 py-4">
                                 <Button
                                     slot="close"
