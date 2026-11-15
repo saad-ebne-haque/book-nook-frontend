@@ -29,6 +29,7 @@ export const config = {
     "/add-book",
     "/my-books",
     "/my-borrows",
+    "/profile",
     "/books/:id",
   ],
 };
