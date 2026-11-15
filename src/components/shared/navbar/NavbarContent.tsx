@@ -1,10 +1,10 @@
 "use client";
 
-import { BookOpen } from "@gravity-ui/icons";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import BrandLogo from "@/components/shared/brand/BrandLogo";
 import LoggedinDropdown from "./LoggedinDropdown";
 
 const publicMenuItems = [
@@ -29,23 +29,7 @@ export function NavbarSkeleton() {
             className="sticky top-0 z-40 border-b border-[#e9e2d5] bg-[#fffdf9]/95 shadow-[0_4px_24px_rgba(54,48,37,0.04)] backdrop-blur-xl"
         >
             <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between gap-5 px-4 sm:px-6 lg:px-8">
-                <Link
-                    href="/"
-                    aria-label="BookNook home"
-                    className="flex shrink-0 items-center gap-3"
-                >
-                    <span className="flex size-11 items-center justify-center rounded-2xl bg-[#315c4d] text-[#fffdf9] shadow-sm">
-                        <BookOpen aria-hidden="true" className="size-5" />
-                    </span>
-                    <span className="flex flex-col">
-                        <span className="font-serif text-xl font-bold tracking-tight text-[#292b25]">
-                            BookNook
-                        </span>
-                        <span className="hidden text-[9px] font-semibold tracking-[0.18em] text-[#7b806f] sm:block">
-                            READ · BORROW · RETURN
-                        </span>
-                    </span>
-                </Link>
+                <BrandLogo showTagline />
 
                 <div role="status" aria-label="Loading navigation" className="flex flex-1 items-center justify-end gap-3 md:justify-center">
                     <span className="sr-only">Loading navigation</span>
@@ -98,19 +82,7 @@ export default function NavbarContent() {
                         )}
                     </button>
 
-                    <Link href="/" aria-label="BookNook home" className="flex items-center gap-3">
-                        <span className="flex size-11 items-center justify-center rounded-2xl bg-[#315c4d] text-[#fffdf9] shadow-sm transition-transform duration-200 hover:-rotate-3">
-                            <BookOpen aria-hidden="true" className="size-5" />
-                        </span>
-                        <span className="flex flex-col">
-                            <span className="font-serif text-xl font-bold tracking-tight text-[#292b25]">
-                                BookNook
-                            </span>
-                            <span className="hidden text-[9px] font-semibold tracking-[0.18em] text-[#7b806f] sm:block">
-                                READ · BORROW · RETURN
-                            </span>
-                        </span>
-                    </Link>
+                    <BrandLogo showTagline />
                 </div>
 
                 <ul className="hidden items-center gap-1 md:flex">

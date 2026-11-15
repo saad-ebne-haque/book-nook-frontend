@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight } from "@gravity-ui/icons";
+import Image from "next/image";
 import { A11y, Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -18,7 +19,8 @@ const slides = [
         background: "bg-[#f3e8d8]",
         bookColor: "bg-[#a64f3c]",
         accent: "text-[#a64f3c]",
-        decoration: "bg-[#d9a875]",
+        image: "/images/booknook-banner.jpg",
+        imageAlt: "Shelves filled with books in a warm, old library",
     },
     {
         eyebrow: "GOOD STORIES, SHARED",
@@ -30,7 +32,8 @@ const slides = [
         background: "bg-[#e6eee6]",
         bookColor: "bg-[#315c4d]",
         accent: "text-[#315c4d]",
-        decoration: "bg-[#a9c5a9]",
+        image: "/images/booknook-login.jpg",
+        imageAlt: "A stack of books ready to be read",
     },
     {
         eyebrow: "YOUR NEXT CHAPTER STARTS HERE",
@@ -42,31 +45,26 @@ const slides = [
         background: "bg-[#eee8f2]",
         bookColor: "bg-[#68507f]",
         accent: "text-[#68507f]",
-        decoration: "bg-[#c6b3d5]",
+        image: "/images/booknook-register.jpg",
+        imageAlt: "A thoughtfully stacked collection of books",
     },
 ];
 
-function BookArtwork({
-    bookTitle,
-    bookAuthor,
-    bookColor,
-    decoration,
-}: (typeof slides)[number]) {
+function FeaturedPhoto({ image, imageAlt }: (typeof slides)[number]) {
     return (
-        <div className="relative mx-auto flex h-56 w-full max-w-md items-center justify-center sm:h-64 md:h-80">
-            <div className={`absolute h-48 w-48 rounded-full ${decoration} opacity-60 blur-2xl sm:h-60 sm:w-60`} />
-            <div className="absolute left-[13%] top-[20%] h-40 w-28 rotate-[-16deg] rounded-lg border-l-[10px] border-[#d7c6a9] bg-[#f7f1e7] shadow-xl sm:h-48 sm:w-32" />
-            <div className={`absolute right-[17%] top-[14%] flex h-48 w-36 rotate-[10deg] flex-col justify-between rounded-lg border-l-[10px] border-black/15 p-4 text-white shadow-2xl sm:h-56 sm:w-40 sm:p-5 ${bookColor}`}>
-                <span className="text-[9px] font-semibold tracking-[0.24em] opacity-80">BOOK NOOK EDITION</span>
-                <span className="whitespace-pre-line font-serif text-2xl font-semibold leading-tight sm:text-3xl">
-                    {bookTitle}
-                </span>
-                <span className="text-[10px] tracking-wide opacity-80">{bookAuthor}</span>
-            </div>
-            <div className="absolute bottom-[13%] left-[18%] h-3 w-56 rotate-[-4deg] rounded-full bg-[#29261f]/15 blur-md sm:w-72" />
-            <div className="absolute left-[5%] top-[2%] rounded-full border border-black/10 bg-white/70 px-4 py-2 text-xs font-medium text-[#29261f] shadow-sm backdrop-blur">
+        <div className="relative mx-auto h-56 w-full max-w-md overflow-hidden rounded-[1.5rem] border-4 border-white/70 shadow-xl sm:h-64 md:h-[340px]">
+            <Image
+                src={image}
+                alt={imageAlt}
+                fill
+                sizes="(max-width: 768px) 100vw, 45vw"
+                className="object-cover"
+                loading={image === "/images/booknook-banner.jpg" ? "eager" : "lazy"}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#292b25]/45 via-transparent to-transparent" />
+            <span className="absolute bottom-4 left-4 rounded-full border border-white/30 bg-[#fffdf9]/90 px-4 py-2 text-xs font-semibold text-[#315c4d] shadow-sm backdrop-blur">
                 A good book is waiting
-            </div>
+            </span>
         </div>
     );
 }
@@ -114,7 +112,7 @@ export default function Banner() {
                                     </Link>
                                 </div>
 
-                                <BookArtwork {...slide} />
+                                <FeaturedPhoto {...slide} />
                             </div>
                         </article>
                     </SwiperSlide>

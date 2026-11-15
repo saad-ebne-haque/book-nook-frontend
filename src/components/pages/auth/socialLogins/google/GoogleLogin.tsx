@@ -1,22 +1,28 @@
 import { authClient } from "@/lib/auth-client"
 import { Button } from "@heroui/react"
+import Image from "next/image"
 
 export interface GoogleLoginProps {
     method: string
+    callbackURL?: string
+    className?: string
+    onError?: (message: string) => void
 }
 
-export default function GoogleLogin({ method }: GoogleLoginProps) {
+export default function GoogleLogin({ method, callbackURL, className, onError }: GoogleLoginProps) {
 
     const handleGoogleLogins = async () => {
 
         const { data, error } = await authClient.signIn.social({
             provider: 'google',
+            callbackURL,
             fetchOptions: {
-                onSuccess: () => {
-                    alert(`Login success`)
-                },
                 onError(err) {
-                    alert(err.error.message)
+                    if (onError) {
+                        onError(err.error.message)
+                    } else {
+                        alert(err.error.message)
+                    }
                 }
             }
         });
@@ -24,13 +30,16 @@ export default function GoogleLogin({ method }: GoogleLoginProps) {
         if (!error) {
             console.log(data);
         } else {
-            console.log(error);
+            onError?.(error.message ?? "Google sign-in failed. Please try again.");
         }
 
     }
     return (
         <>
-            <Button onClick={handleGoogleLogins}>{method} With Google</Button>
+            <Button className={className} variant={className ? "outline" : "primary"} onClick={handleGoogleLogins}>
+                <Image src="/images/google-g-logo.png" alt="" width={20} height={20} className="size-5 shrink-0" />
+                {method} with Google
+            </Button>
         </>
     )
 }

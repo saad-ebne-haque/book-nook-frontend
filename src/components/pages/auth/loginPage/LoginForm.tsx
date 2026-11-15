@@ -2,7 +2,7 @@
 
 import { authClient } from "@/lib/auth-client";
 import { Check, Eye, EyeSlash } from "@gravity-ui/icons";
-import { Button, Description, FieldError, Form, Input, InputGroup, Label, TextField } from "@heroui/react";
+import { Button, FieldError, Form, Input, InputGroup, Label, TextField } from "@heroui/react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import GoogleLogin from "../socialLogins/google/GoogleLogin";
@@ -11,12 +11,15 @@ const LoginForm = () => {
     const searchParams = useSearchParams();
     const requestedUrl = searchParams.get("callbackUrl") || '/';
 
-
     const [isVisible, setIsVisible] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const onSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.currentTarget;
+        setErrorMessage("");
+        setIsSubmitting(true);
         const formData = new FormData(form);
         const data: Record<string, string> = {};
 
@@ -24,35 +27,43 @@ const LoginForm = () => {
             data[key] = value.toString();
         });
 
-        const { data: resData, error } = await authClient.signIn.email({
-            email: data.email,
-            password: data.password,
-            callbackURL: requestedUrl,
-            fetchOptions: {
-                onSuccess: () => {
-                    form.reset();
-                    alert(`login success`);
+        try {
+            const { error } = await authClient.signIn.email({
+                email: data.email,
+                password: data.password,
+                callbackURL: requestedUrl,
+                fetchOptions: {
+                    onSuccess: () => form.reset(),
                 },
-                onError(err) {
-                    alert(err.error.message);
-                }
-            }
-        });
+            });
 
-        if (!error) {
-            console.log(resData);
-        } else {
-            console.log(error);
+            if (error) {
+                setErrorMessage(error.message || "We couldn't sign you in. Check your details and try again.");
+            }
+        } catch (error) {
+            setErrorMessage(
+                error instanceof Error
+                    ? error.message
+                    : "We couldn't sign you in. Please try again.",
+            );
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     return (
         <>
-            <Form className="flex w-96 flex-col gap-4" onSubmit={onSubmit}>
+            <Form className="flex w-full flex-col gap-5" onSubmit={onSubmit}>
+                {errorMessage && (
+                    <p role="alert" className="rounded-xl border border-[#e8c8bc] bg-[#fbefeb] px-4 py-3 text-sm leading-5 text-[#9b4938]">
+                        {errorMessage}
+                    </p>
+                )}
                 <TextField
                     isRequired
                     name="email"
                     type="email"
+                    className="w-full"
                     validate={(value) => {
                         if (!/^[A-Z0-9.\_%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) {
                             return "Please enter a valid email address";
@@ -60,8 +71,8 @@ const LoginForm = () => {
                         return null;
                     }}
                 >
-                    <Label>Email</Label>
-                    <Input placeholder="john@example.com" />
+                    <Label className="font-medium text-[#464940]">Email address</Label>
+                    <Input className="mt-1" placeholder="you@example.com" />
                     <FieldError />
                 </TextField>
 
@@ -82,7 +93,7 @@ const LoginForm = () => {
                         return null;
                     }}
                 >
-                    <Label>Password</Label>
+                    <Label className="font-medium text-[#464940]">Password</Label>
                     <InputGroup>
                         <InputGroup.Input
                             className="w-full"
@@ -101,23 +112,31 @@ const LoginForm = () => {
                             </Button>
                         </InputGroup.Suffix>
                     </InputGroup>
-                    <Description>Must be at least 6 characters with 1 uppercase and 1 number</Description>
                     <FieldError />
                 </TextField>
 
-                <div className="flex gap-2">
-                    <Button type="submit">
-                        <Check />
-                        Submit
-                    </Button>
-                    <Button type="reset" variant="secondary">
-                        Reset
-                    </Button>
-                </div>
-            </Form>
+                <Button
+                    type="submit"
+                    isDisabled={isSubmitting}
+                    className="mt-1 min-h-12 w-full rounded-full bg-[#315c4d] font-semibold text-white shadow-sm transition-colors hover:bg-[#25483c]"
+                >
+                    {isSubmitting ? "Signing in..." : "Sign in"}
+                    {!isSubmitting && <Check aria-hidden="true" className="size-4" />}
+                </Button>
 
-            <p className="my-2">or</p>
-            <GoogleLogin method="Login"></GoogleLogin>
+                <div className="flex items-center gap-4 py-1" aria-hidden="true">
+                    <span className="h-px flex-1 bg-[#e9e2d5]" />
+                    <span className="text-xs font-medium uppercase tracking-[0.16em] text-[#929187]">or continue with</span>
+                    <span className="h-px flex-1 bg-[#e9e2d5]" />
+                </div>
+
+                <GoogleLogin
+                    method="Continue"
+                    callbackURL={requestedUrl}
+                    onError={setErrorMessage}
+                    className="min-h-12 w-full rounded-full border-[#dce4da] bg-white font-semibold text-[#3d443b] hover:bg-[#f5f7f2]"
+                />
+            </Form>
         </>
     );
 };
