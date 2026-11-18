@@ -32,7 +32,7 @@ const RegistrationForm = () => {
                 email,
                 password,
                 image: profileImage.trim() || undefined,
-                callbackURL: "/login",
+                callbackURL: "/",
             });
 
             if (error) {
