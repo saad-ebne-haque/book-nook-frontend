@@ -199,7 +199,7 @@ const RegistrationForm = () => {
 
             <GoogleLogin
                 method="Continue"
-                callbackURL="/login"
+                callbackURL="/"
                 onError={(message) => toast.danger(message)}
                 className="min-h-12 w-full rounded-full border-[#dce4da] bg-white font-semibold text-[#3d443b] hover:bg-[#f5f7f2]"
             />
