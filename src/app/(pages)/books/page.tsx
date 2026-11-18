@@ -1,5 +1,10 @@
 import BooksContainer from "@/components/pages/books/BooksContainer";
 import { Suspense } from "react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "All Books",
+};
 
 const AllBooksPage = async () => {
 

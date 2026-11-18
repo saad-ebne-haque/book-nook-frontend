@@ -1,5 +1,9 @@
 import BorrowTable from "@/components/pages/myBorrows/BorrowTable";
+import type { Metadata } from "next";
 
+export const metadata: Metadata = {
+    title: "My Borrows",
+};
 
 const MyBorrowsPage = () => {
     return (

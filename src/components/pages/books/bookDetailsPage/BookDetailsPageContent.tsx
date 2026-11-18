@@ -39,6 +39,7 @@ export default function BookDetailsPageContent() {
     const router = useRouter();
     const [book, setBook] = useState<Book | null>(null);
     const [refreshKey, setRefreshKey] = useState(0);
+    const bookTitle = book?.title;
 
     useEffect(() => {
         let isCurrent = true;
@@ -65,6 +66,12 @@ export default function BookDetailsPageContent() {
             isCurrent = false;
         };
     }, [id, refreshKey]);
+
+    useEffect(() => {
+        if (bookTitle) {
+            document.title = bookTitle;
+        }
+    }, [bookTitle]);
 
     if (!book) {
         return <BookDetailsSkeleton />;

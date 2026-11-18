@@ -1,9 +1,14 @@
 
 
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import Banner from "@/components/pages/home/Banner";
 import NewArrivals, { NewArrivalsSkeleton } from "@/components/pages/home/NewArrivals";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Home",
+};
 
 const borrowingSteps = [
   {

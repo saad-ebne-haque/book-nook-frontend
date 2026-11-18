@@ -1,7 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import RegistrationForm from "@/components/pages/auth/registerPage/RegistrationForm";
 import BrandLogo from "@/components/shared/brand/BrandLogo";
+
+export const metadata: Metadata = {
+    title: "Register",
+};
 
 export default function RegisterPage() {
     return (

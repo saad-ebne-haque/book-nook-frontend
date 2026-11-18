@@ -1,8 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import LoginForm from "@/components/pages/auth/loginPage/LoginForm";
 import BrandLogo from "@/components/shared/brand/BrandLogo";
+
+export const metadata: Metadata = {
+    title: "Login",
+};
 
 function LoginFormSkeleton() {
     return (
