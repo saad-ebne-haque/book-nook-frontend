@@ -42,28 +42,35 @@ export default function BookDetailsPageContent() {
     const bookTitle = book?.title;
 
     useEffect(() => {
-        let isCurrent = true;
+        let isRequestActive = true;
 
-        authenticatedFetch(`${process.env.NEXT_PUBLIC_API}/books/${id}`)
-            .then(async (res) => {
-                const response = await res.json();
-                if (!res.ok || !response.success) {
-                    throw new Error(response.message || "Failed to fetch book");
+        async function loadBook() {
+            try {
+                const response = await authenticatedFetch(
+                    `${process.env.NEXT_PUBLIC_API}/books/${id}`
+                );
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || "Failed to fetch book.");
                 }
-                if (isCurrent) {
-                    setBook(response.data);
+
+                if (isRequestActive) {
+                    setBook(result.data);
                 }
-            })
-            .catch((error) => {
-                if (isCurrent) {
+            } catch (error) {
+                if (isRequestActive) {
                     toast.danger(
                         error instanceof Error ? error.message : "Failed to load book details."
                     );
                 }
-            });
+            }
+        }
+
+        void loadBook();
 
         return () => {
-            isCurrent = false;
+            isRequestActive = false;
         };
     }, [id, refreshKey]);
 

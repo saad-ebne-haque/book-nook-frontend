@@ -4,7 +4,7 @@ import { authClient } from "@/lib/auth-client";
 import { Check, Eye, EyeSlash } from "@gravity-ui/icons";
 import { Button, FieldError, Form, Input, InputGroup, Label, TextField, toast } from "@heroui/react";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import GoogleLogin from "../socialLogins/google/GoogleLogin";
 
 const LoginForm = () => {
@@ -14,21 +14,18 @@ const LoginForm = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const onSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const form = e.currentTarget;
+    const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const form = event.currentTarget;
         setIsSubmitting(true);
         const formData = new FormData(form);
-        const data: Record<string, string> = {};
-
-        formData.forEach((value, key) => {
-            data[key] = value.toString();
-        });
+        const email = String(formData.get("email") ?? "");
+        const password = String(formData.get("password") ?? "");
 
         try {
             const { error } = await authClient.signIn.email({
-                email: data.email,
-                password: data.password,
+                email,
+                password,
                 callbackURL: requestedUrl,
                 fetchOptions: {
                     onSuccess: () => form.reset(),

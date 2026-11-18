@@ -4,7 +4,7 @@ import { authClient } from "@/lib/auth-client";
 import { Check, Eye, EyeSlash } from "@gravity-ui/icons";
 import { Button, Description, FieldError, Form, Input, InputGroup, Label, TextField, toast } from "@heroui/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import GoogleLogin from "../socialLogins/google/GoogleLogin";
 
 const RegistrationForm = () => {
@@ -13,20 +13,23 @@ const RegistrationForm = () => {
     const [password, setPassword] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const onSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const form = e.currentTarget;
+    const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const form = event.currentTarget;
         const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
+        const name = String(formData.get("name") ?? "");
+        const email = String(formData.get("email") ?? "");
+        const password = String(formData.get("password") ?? "");
+        const image = String(formData.get("image") ?? "");
 
         setIsSubmitting(true);
 
         try {
             const { error } = await authClient.signUp.email({
-                name: String(data.name),
-                email: String(data.email),
-                password: String(data.password),
-                image: String(data.image || ""),
+                name,
+                email,
+                password,
+                image,
                 callbackURL: "/login",
                 fetchOptions: {
                     onSuccess: () => {

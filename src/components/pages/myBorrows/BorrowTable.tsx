@@ -16,10 +16,10 @@ const BorrowTable = () => {
     const [borrowedBooks, setBorrowedBooks] = useState<BorrowedBookType[]>([]);
     const [loadError, setLoadError] = useState<string | null>(null);
     const [retryCount, setRetryCount] = useState(0);
-    const [loadedEmail, setLoadedEmail] = useState<string | null>(null);
+    const [loadedUserEmail, setLoadedUserEmail] = useState<string | null>(null);
     const [isRetrying, setIsRetrying] = useState(false);
     const isLoading = session.isPending
-        || Boolean(userEmail && (loadedEmail !== userEmail || isRetrying));
+        || Boolean(userEmail && (loadedUserEmail !== userEmail || isRetrying));
     const visibleBooks = userEmail ? borrowedBooks : [];
 
     const handleBookReturned = (bookId: string) => {
@@ -35,15 +35,17 @@ const BorrowTable = () => {
     };
 
     useEffect(() => {
-        let isCurrent = true;
+        let isRequestActive = true;
 
         if (session.isPending || !userEmail) {
             return () => {
-                isCurrent = false;
+                isRequestActive = false;
             };
         }
 
-        const fetchBorrowedBooks = async () => {
+        const currentUserEmail = userEmail;
+
+        async function loadBorrowedBooks() {
             try {
                 const response = await authenticatedFetch(
                     `${process.env.NEXT_PUBLIC_API}/borrows`
@@ -58,32 +60,32 @@ const BorrowTable = () => {
                     throw new Error("The borrowed books response was not valid.");
                 }
 
-                if (isCurrent) {
+                if (isRequestActive) {
                     setBorrowedBooks(result.data);
                     setLoadError(null);
-                    setLoadedEmail(userEmail);
+                    setLoadedUserEmail(currentUserEmail);
                 }
             } catch (error) {
                 const message = error instanceof Error
                     ? error.message
                     : "Failed to fetch borrowed books.";
 
-                if (isCurrent) {
+                if (isRequestActive) {
                     setLoadError(message);
-                    setLoadedEmail(userEmail);
+                    setLoadedUserEmail(currentUserEmail);
                     toast.danger(message);
                 }
             } finally {
-                if (isCurrent) {
+                if (isRequestActive) {
                     setIsRetrying(false);
                 }
             }
-        };
+        }
 
-        fetchBorrowedBooks();
+        void loadBorrowedBooks();
 
         return () => {
-            isCurrent = false;
+            isRequestActive = false;
         };
     }, [session.isPending, userEmail, retryCount]);
 

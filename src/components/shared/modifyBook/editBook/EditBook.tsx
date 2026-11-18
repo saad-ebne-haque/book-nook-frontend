@@ -35,8 +35,15 @@ export default function EditBook({ book, compact = false, onUpdated }: EditBookP
         }
 
         const formData = new FormData(event.currentTarget);
-        const data = Object.fromEntries(formData.entries());
-        data.image = imageUrl.trim();
+        const updatedBook = {
+            title: String(formData.get("title") ?? ""),
+            author: String(formData.get("author") ?? ""),
+            description: String(formData.get("description") ?? ""),
+            publishedYear: String(formData.get("publishedYear") ?? ""),
+            totalCopies: String(formData.get("totalCopies") ?? ""),
+            image: imageUrl.trim(),
+            language: String(formData.get("language") ?? ""),
+        };
 
         setIsSaving(true);
 
@@ -46,7 +53,7 @@ export default function EditBook({ book, compact = false, onUpdated }: EditBookP
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(data),
+                body: JSON.stringify(updatedBook),
             });
             const result = await response.json();
 

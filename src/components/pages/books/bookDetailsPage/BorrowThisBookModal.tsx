@@ -26,13 +26,16 @@ export default function BorrowBookModal({ book, onBorrowed }: BorrowBookModalPro
     const handleBorrowBook = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        const data = Object.fromEntries(formData.entries());
+        const borrowerName = String(formData.get("name") ?? "");
+        const borrowerEmail = String(formData.get("email") ?? "");
+        const borrowedDate = String(formData.get("borrowDate") ?? "");
+        const returnDate = String(formData.get("returnDate") ?? "");
         const borrowedBookData = {
             ...bookData,
-            borrowerEmail: data.email,
-            borrowerName: data.name,
-            borrowedDate: data.borrowDate,
-            returnDate: data.returnDate,
+            borrowerEmail,
+            borrowerName,
+            borrowedDate,
+            returnDate,
             bookId: _id,
         };
 
