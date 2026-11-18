@@ -1,5 +1,5 @@
 import Link from "next/link";
-import BookCard from "@/components/shared/Books/bookCard";
+import NewArrivalsCarousel from "./NewArrivalsCarousel";
 import type { Book } from "@/types/bookType";
 
 interface BooksApiResponse {
@@ -45,37 +45,13 @@ export default async function NewArrivals() {
                 </div>
                 <Link
                     href="/books"
-                    className="inline-flex min-h-11 w-fit items-center justify-center rounded-full border border-[#dce4da] px-5 text-sm font-semibold text-[#315c4d] transition-colors hover:bg-[#eaf0e9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#315c4d]"
+                    className="inline-flex min-h-11 w-fit shrink-0 items-center justify-center rounded-full border border-[#dce4da] px-5 text-sm font-semibold text-[#315c4d] transition-colors hover:bg-[#eaf0e9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#315c4d]"
                 >
                     See All Books
                 </Link>
             </div>
 
-            {result.data.length === 0 ? (
-                <div className="rounded-[1.75rem] border border-dashed border-[#d9dfd4] bg-[#fffdf9] px-6 py-12 text-center">
-                    <h3 className="font-serif text-xl font-semibold text-[#292b25]">
-                        The shelf is waiting for its first story
-                    </h3>
-                    <p className="mt-2 text-sm leading-6 text-[#74756c]">
-                        Check back soon to discover newly added books.
-                    </p>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {result.data.map((book) => (
-                        <BookCard key={book._id} book={book} />
-                    ))}
-                </div>
-            )}
-
-            <div className="mt-7 flex justify-center">
-                <Link
-                    href="/books"
-                    className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#315c4d] px-7 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#25483c] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#315c4d]"
-                >
-                    See All Books
-                </Link>
-            </div>
+            <NewArrivalsCarousel books={result.data} />
         </section>
     );
 }
@@ -91,12 +67,20 @@ export function NewArrivalsSkeleton() {
                 <div className="h-9 w-56 animate-pulse rounded bg-[#eee8dc]" />
                 <div className="h-4 w-full max-w-md animate-pulse rounded bg-[#eee8dc]" />
             </div>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {Array.from({ length: 6 }, (_, index) => (
+            <div className="flex gap-5 overflow-hidden">
+                {Array.from({ length: 3 }, (_, index) => (
                     <div
                         key={index}
-                        className="h-[480px] animate-pulse rounded-[1.75rem] border border-[#e9e2d5] bg-[#fffdf9]"
-                    />
+                        className="w-[88%] shrink-0 animate-pulse overflow-hidden rounded-[1.5rem] border border-[#e9e2d5] bg-[#fffdf9] sm:w-[62%] lg:w-[46%]"
+                    >
+                        <div className="aspect-[16/10] bg-[#eee8dc]" />
+                        <div className="space-y-3 p-5">
+                            <div className="h-4 w-2/3 rounded bg-[#eee8dc]" />
+                            <div className="h-6 w-4/5 rounded bg-[#eee8dc]" />
+                            <div className="h-4 w-full rounded bg-[#eee8dc]" />
+                            <div className="h-4 w-1/2 rounded bg-[#eee8dc]" />
+                        </div>
+                    </div>
                 ))}
             </div>
         </section>
