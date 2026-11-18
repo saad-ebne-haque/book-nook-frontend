@@ -76,7 +76,7 @@ export default function BookDetailsPageContent() {
 
     useEffect(() => {
         if (bookTitle) {
-            document.title = bookTitle;
+            document.title = `BookNook | ${bookTitle}`;
         }
     }, [bookTitle]);
 

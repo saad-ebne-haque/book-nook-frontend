@@ -17,7 +17,7 @@ interface BookDetailsPageProps {
 }
 
 const createBookTitleMetadata = (title: string): Metadata => ({
-    title: { absolute: title },
+    title,
 });
 
 export async function generateMetadata(
