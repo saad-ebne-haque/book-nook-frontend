@@ -1,4 +1,5 @@
 import MyBooksPageContent from "@/components/pages/myBooks/MyBooksPageContent";
+import BooksGridSkeleton from "@/components/shared/Books/BooksGridSkeleton";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 
@@ -7,18 +8,13 @@ export const metadata: Metadata = {
 };
 
 
-const MyBooksPage = async () => {
-
-
-
-
+const MyBooksPage = () => {
     return (
         <>
-
-            <Suspense>
-                <MyBooksPageContent></MyBooksPageContent>
+            <h1 className="font-bold text-4xl">My Books</h1>
+            <Suspense fallback={<BooksGridSkeleton label="Loading your books" />}>
+                <MyBooksPageContent />
             </Suspense>
-
         </>
     );
 };
