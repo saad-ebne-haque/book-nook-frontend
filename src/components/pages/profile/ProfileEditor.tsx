@@ -1,6 +1,7 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
+import ProfileImageField from "@/components/shared/profile/ProfileImageField";
 import { PencilToSquare } from "@gravity-ui/icons";
 import { Button, Description, FieldError, Form, Input, Label, Modal, TextField, toast } from "@heroui/react";
 import { useRouter } from "next/navigation";
@@ -28,6 +29,7 @@ export default function ProfileEditor({ name: currentName, image: currentImage }
     const [name, setName] = useState(currentName);
     const [image, setImage] = useState(currentImage ?? "");
     const [isSavingProfile, setIsSavingProfile] = useState(false);
+    const [isUploadingProfileImage, setIsUploadingProfileImage] = useState(false);
     const [isSavingPassword, setIsSavingPassword] = useState(false);
 
     const handleProfileSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -150,25 +152,14 @@ export default function ProfileEditor({ name: currentName, image: currentImage }
                                         <FieldError />
                                     </TextField>
 
-                                    <TextField
-                                        name="image"
-                                        type="url"
-                                        className="w-full"
+                                    <ProfileImageField
+                                        value={image}
+                                        onChange={setImage}
+                                        onUploadingChange={setIsUploadingProfileImage}
                                         validate={(value) => isOptionalHttpsUrl(value) ? null : "Enter a valid HTTPS URL"}
-                                    >
-                                        <Label className="font-medium text-[#464940]">Profile photo URL (optional)</Label>
-                                        <Input
-                                            value={image}
-                                            onChange={(event) => setImage(event.target.value)}
-                                            placeholder="https://example.com/photo.jpg"
-                                        />
-                                        <Description className="text-[#85867c]">
-                                            Use an HTTPS image URL, or leave blank to remove your photo.
-                                        </Description>
-                                        <FieldError />
-                                    </TextField>
+                                    />
 
-                                    <Button type="submit" isDisabled={isSavingProfile} className="w-full rounded-full bg-[#315c4d] font-semibold text-white hover:bg-[#25483c]">
+                                    <Button type="submit" isDisabled={isSavingProfile || isUploadingProfileImage} className="w-full rounded-full bg-[#315c4d] font-semibold text-white hover:bg-[#25483c]">
                                         {isSavingProfile ? "Saving profile..." : "Save profile"}
                                     </Button>
                                 </Form>

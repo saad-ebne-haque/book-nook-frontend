@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     });
 
     if (!session) {
-        return Response.json({ message: "Please sign in to upload a cover." }, { status: 401 });
+        return Response.json({ message: "Please sign in to upload an image." }, { status: 401 });
     }
 
     let formData: FormData;

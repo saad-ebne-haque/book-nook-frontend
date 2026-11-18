@@ -5,12 +5,16 @@ import { Check, Eye, EyeSlash } from "@gravity-ui/icons";
 import { Button, Description, FieldError, Form, Input, InputGroup, Label, TextField, toast } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import ProfileImageField from "@/components/shared/profile/ProfileImageField";
+import { uploadProfileImage } from "@/lib/profile-image-upload";
 import GoogleLogin from "../socialLogins/google/GoogleLogin";
 
 const RegistrationForm = () => {
     const router = useRouter();
     const [isVisible, setIsVisible] = useState(false);
     const [password, setPassword] = useState("");
+    const [profileImage, setProfileImage] = useState("");
+    const [pendingProfileImage, setPendingProfileImage] = useState<File | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -20,8 +24,6 @@ const RegistrationForm = () => {
         const name = String(formData.get("name") ?? "");
         const email = String(formData.get("email") ?? "");
         const password = String(formData.get("password") ?? "");
-        const image = String(formData.get("image") ?? "");
-
         setIsSubmitting(true);
 
         try {
@@ -29,21 +31,39 @@ const RegistrationForm = () => {
                 name,
                 email,
                 password,
-                image,
+                image: profileImage.trim() || undefined,
                 callbackURL: "/login",
-                fetchOptions: {
-                    onSuccess: () => {
-                        form.reset();
-                        setPassword("");
-                        toast.success("Account created successfully. You can now sign in.");
-                        router.push("/login");
-                    },
-                }
             });
 
             if (error) {
                 toast.danger(error.message || "We couldn't create your account. Please try again.");
+                return;
             }
+
+            if (pendingProfileImage) {
+                try {
+                    const imageUrl = await uploadProfileImage(pendingProfileImage);
+                    const { error: updateError } = await authClient.updateUser({ image: imageUrl });
+                    if (updateError) {
+                        throw new Error(updateError.message || "Unable to save the profile photo.");
+                    }
+                    toast.success("Account created and profile photo uploaded. You can now sign in.");
+                } catch (error) {
+                    toast.danger(
+                        error instanceof Error
+                            ? `Your account was created, but the profile photo could not be saved: ${error.message}`
+                            : "Your account was created, but the profile photo could not be saved. You can add it from your profile later."
+                    );
+                }
+            } else {
+                toast.success("Account created successfully. You can now sign in.");
+            }
+
+            form.reset();
+            setPassword("");
+            setProfileImage("");
+            setPendingProfileImage(null);
+            router.push("/login");
         } catch (error) {
             toast.danger(
                 error instanceof Error
@@ -84,14 +104,12 @@ const RegistrationForm = () => {
                 <FieldError />
             </TextField>
 
-            <TextField className="w-full" name="image" type="url">
-                <Label className="font-medium text-[#464940]">Profile photo URL (optional)</Label>
-                <Input placeholder="https://example.com/photo.jpg" />
-                <Description className="text-[#85867c]">
-                    Add a photo so your reading community can recognize you.
-                </Description>
-                <FieldError />
-            </TextField>
+            <ProfileImageField
+                value={profileImage}
+                onChange={setProfileImage}
+                deferUploadUntilRegistration
+                onFileSelected={setPendingProfileImage}
+            />
 
             <TextField
                 isRequired
