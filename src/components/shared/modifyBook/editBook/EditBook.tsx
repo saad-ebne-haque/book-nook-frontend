@@ -2,11 +2,13 @@
 
 import { PencilToSquare } from "@gravity-ui/icons";
 import type { Book } from "@/types/bookType";
-import { Button, Input, Label, Modal, Surface, TextArea, TextField, toast, useOverlayState } from "@heroui/react";
+import { Button, Input, Label, ListBox, Modal, Select, Surface, TextArea, TextField, toast, useOverlayState } from "@heroui/react";
 import BookCoverField from "@/components/shared/Books/BookCoverField";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { authenticatedFetch } from "@/lib/api-client";
+
+const categories = ["Fiction", "Science", "History", "Kids", "Others"];
 
 export interface EditBookProps {
     book: Book;
@@ -35,14 +37,28 @@ export default function EditBook({ book, compact = false, onUpdated }: EditBookP
         }
 
         const formData = new FormData(event.currentTarget);
+        const publishedYear = Number(formData.get("publishedYear"));
+        const totalCopies = Number(formData.get("totalCopies"));
+
+        if (!Number.isSafeInteger(publishedYear) || publishedYear < 0 || publishedYear > new Date().getFullYear()) {
+            toast.danger("Enter a valid published year.");
+            return;
+        }
+
+        if (!Number.isSafeInteger(totalCopies) || totalCopies < 1) {
+            toast.danger("Enter at least one copy of the book.");
+            return;
+        }
+
         const updatedBook = {
-            title: String(formData.get("title") ?? ""),
-            author: String(formData.get("author") ?? ""),
+            title: String(formData.get("title") ?? "").trim(),
+            author: String(formData.get("author") ?? "").trim(),
             description: String(formData.get("description") ?? ""),
-            publishedYear: String(formData.get("publishedYear") ?? ""),
-            totalCopies: String(formData.get("totalCopies") ?? ""),
+            category: String(formData.get("category") ?? ""),
+            publishedYear,
+            totalCopies,
             image: imageUrl.trim(),
-            language: String(formData.get("language") ?? ""),
+            language: String(formData.get("language") ?? "").trim(),
         };
 
         setIsSaving(true);
@@ -137,6 +153,47 @@ export default function EditBook({ book, compact = false, onUpdated }: EditBookP
                                         <Input placeholder="Enter author name" />
                                     </TextField>
 
+                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                        <div className="flex flex-col gap-2">
+                                            <Label className="font-medium text-[#464940]">Category</Label>
+                                            <Select
+                                                isRequired
+                                                name="category"
+                                                defaultValue={book.category}
+                                            >
+                                                <Select.Trigger className="min-h-11 rounded-xl border border-[#e9e2d5] bg-white px-3 text-left">
+                                                    <Select.Value />
+                                                    <Select.Indicator />
+                                                </Select.Trigger>
+                                                <Select.Popover>
+                                                    <ListBox>
+                                                        {categories.map((category) => (
+                                                            <ListBox.Item
+                                                                key={category}
+                                                                id={category}
+                                                                textValue={category}
+                                                            >
+                                                                {category}
+                                                                <ListBox.ItemIndicator />
+                                                            </ListBox.Item>
+                                                        ))}
+                                                    </ListBox>
+                                                </Select.Popover>
+                                            </Select>
+                                        </div>
+
+                                        <TextField
+                                            className="w-full"
+                                            name="publishedYear"
+                                            type="number"
+                                            defaultValue={book.publishedYear.toString()}
+                                            isRequired
+                                        >
+                                            <Label className="font-medium text-[#464940]">Published year</Label>
+                                            <Input min={0} max={new Date().getFullYear()} step={1} placeholder="e.g. 2020" />
+                                        </TextField>
+                                    </div>
+
                                     <div className="flex flex-col gap-2">
                                         <Label className="font-medium text-[#464940]">Description</Label>
                                         <TextArea
@@ -150,24 +207,13 @@ export default function EditBook({ book, compact = false, onUpdated }: EditBookP
                                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                         <TextField
                                             className="w-full"
-                                            name="publishedYear"
-                                            type="number"
-                                            defaultValue={book.publishedYear.toString()}
-                                            isRequired
-                                        >
-                                            <Label className="font-medium text-[#464940]">Published year</Label>
-                                            <Input placeholder="e.g. 2020" />
-                                        </TextField>
-
-                                        <TextField
-                                            className="w-full"
                                             name="totalCopies"
                                             type="number"
                                             defaultValue={book.totalCopies.toString()}
                                             isRequired
                                         >
                                             <Label className="font-medium text-[#464940]">Total copies</Label>
-                                            <Input placeholder="e.g. 10" />
+                                            <Input min={1} step={1} placeholder="e.g. 10" />
                                         </TextField>
                                     </div>
 
