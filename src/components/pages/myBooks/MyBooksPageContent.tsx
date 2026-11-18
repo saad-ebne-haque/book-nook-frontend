@@ -1,5 +1,6 @@
 
 import { auth } from "@/lib/auth"
+import { getServerAuthToken } from "@/lib/auth-token-server";
 import { Book } from "@/types/bookType";
 import { headers } from "next/headers"
 import MyBookCard from "./MyBookCard";
@@ -12,12 +13,15 @@ export default async function MyBooksPageContent() {
         throw new Error("An authenticated user is required to load your books.");
     }
 
-    const { token } = await auth.api.getToken({ headers: requestHeaders });
+    const token = await getServerAuthToken();
+    if (!token) {
+        throw new Error("An authentication token is required to load your books.");
+    }
     const email = session.user.email;
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_API}/my-books/${encodeURIComponent(email)}`, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            authorization: `Bearer ${token}`,
         },
     })
     const response = await res.json();

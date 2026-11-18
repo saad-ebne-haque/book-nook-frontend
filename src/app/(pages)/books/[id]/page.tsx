@@ -1,9 +1,8 @@
 
 import BookDetailsPageContent from "@/components/pages/books/bookDetailsPage/BookDetailsPageContent";
-import { auth } from "@/lib/auth";
+import { getServerAuthToken } from "@/lib/auth-token-server";
 import type { Book } from "@/types/bookType";
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { Suspense } from "react";
 import { connection } from "next/server";
 
@@ -31,8 +30,7 @@ export async function generateMetadata(
         throw new Error("NEXT_PUBLIC_API is not configured.");
     }
 
-    const requestHeaders = await headers();
-    const { token } = await auth.api.getToken({ headers: requestHeaders });
+    const token = await getServerAuthToken();
 
     if (!token) {
         return createBookTitleMetadata("Book Details");
@@ -41,7 +39,7 @@ export async function generateMetadata(
     try {
         const response = await fetch(`${apiUrl}/books/${encodeURIComponent(id)}`, {
             headers: {
-                Authorization: `Bearer ${token}`,
+                authorization: `Bearer ${token}`,
             },
             cache: "no-store",
         });
