@@ -3,6 +3,7 @@
 import { PencilToSquare } from "@gravity-ui/icons";
 import type { Book } from "@/types/bookType";
 import { Button, Input, Label, Modal, Surface, TextArea, TextField, toast, useOverlayState } from "@heroui/react";
+import BookCoverField from "@/components/shared/Books/BookCoverField";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { authenticatedFetch } from "@/lib/api-client";
@@ -17,11 +18,25 @@ export default function EditBook({ book, compact = false, onUpdated }: EditBookP
     const router = useRouter();
     const modalState = useOverlayState();
     const [isSaving, setIsSaving] = useState(false);
+    const [isUploadingImage, setIsUploadingImage] = useState(false);
+    const [imageUrl, setImageUrl] = useState(book.image);
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
+        if (isUploadingImage) {
+            toast.danger("Wait for the book cover upload to finish.");
+            return;
+        }
+
+        if (!imageUrl.trim()) {
+            toast.danger("Upload a cover image or paste an image URL.");
+            return;
+        }
+
         const formData = new FormData(event.currentTarget);
         const data = Object.fromEntries(formData.entries());
+        data.image = imageUrl.trim();
 
         setIsSaving(true);
 
@@ -60,7 +75,10 @@ export default function EditBook({ book, compact = false, onUpdated }: EditBookP
                 aria-label={compact ? "Edit book" : undefined}
                 size={compact ? "sm" : "md"}
                 variant={compact ? "outline" : "primary"}
-                onPress={modalState.open}
+                onPress={() => {
+                    setImageUrl(book.image);
+                    modalState.open();
+                }}
                 className={compact
                     ? "size-9 rounded-full border-[#dce4da] bg-[#fffdf9] text-[#315c4d] shadow-sm hover:bg-[#eaf0e9]"
                     : "rounded-full bg-[#315c4d] font-semibold text-white hover:bg-[#25483c]"}
@@ -146,10 +164,11 @@ export default function EditBook({ book, compact = false, onUpdated }: EditBookP
                                         </TextField>
                                     </div>
 
-                                    <TextField className="w-full" name="image" type="url" defaultValue={book.image} isRequired>
-                                        <Label className="font-medium text-[#464940]">Book cover image URL</Label>
-                                        <Input placeholder="https://..." />
-                                    </TextField>
+                                    <BookCoverField
+                                        value={imageUrl}
+                                        onChange={setImageUrl}
+                                        onUploadingChange={setIsUploadingImage}
+                                    />
 
                                     <TextField className="w-full" name="language" defaultValue={book.language} isRequired>
                                         <Label className="font-medium text-[#464940]">Language</Label>
@@ -170,10 +189,14 @@ export default function EditBook({ book, compact = false, onUpdated }: EditBookP
                             <Button
                                 type="submit"
                                 form={`edit-book-form-${book._id}`}
-                                isDisabled={isSaving}
+                                isDisabled={isSaving || isUploadingImage}
                                 className="rounded-full bg-[#315c4d] font-semibold text-white hover:bg-[#25483c]"
                             >
-                                {isSaving ? "Saving..." : "Save changes"}
+                                {isUploadingImage
+                                    ? "Uploading cover..."
+                                    : isSaving
+                                        ? "Saving..."
+                                        : "Save changes"}
                             </Button>
                         </Modal.Footer>
                     </Modal.Dialog>

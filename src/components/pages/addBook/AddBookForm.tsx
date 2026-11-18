@@ -2,6 +2,7 @@
 
 import { authClient } from "@/lib/auth-client";
 import { authenticatedFetch } from "@/lib/api-client";
+import BookCoverField from "@/components/shared/Books/BookCoverField";
 import {
     BookOpen,
 } from "@gravity-ui/icons";
@@ -26,12 +27,24 @@ export default function AddBookForm() {
     const session = authClient.useSession();
     const user = session.data?.user;
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isUploadingImage, setIsUploadingImage] = useState(false);
+    const [imageUrl, setImageUrl] = useState("");
 
     const handleAddBook = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         if (!user) {
             toast.danger("Please sign in before adding a book.");
+            return;
+        }
+
+        if (isUploadingImage) {
+            toast.danger("Wait for the book cover upload to finish.");
+            return;
+        }
+
+        if (!imageUrl) {
+            toast.danger("Upload a book cover image before adding the book.");
             return;
         }
 
@@ -84,6 +97,7 @@ export default function AddBookForm() {
 
             toast.success("Book added successfully.");
             form.reset();
+            setImageUrl("");
         } catch (error) {
             toast.danger(
                 error instanceof Error ? error.message : "Failed to add the book."
@@ -220,16 +234,11 @@ export default function AddBookForm() {
                                 </TextField>
                             </div>
 
-                            <TextField name="image" type="url" isRequired className="w-full">
-                                <Label className="font-medium text-[#464940]">Book cover image URL</Label>
-                                <Input
-                                    placeholder="https://example.com/book-cover.jpg"
-                                    autoComplete="url"
-                                />
-                                <Description className="text-[#85867c]">
-                                    Upload the cover to imgbb or Postimages, then paste its image URL here.
-                                </Description>
-                            </TextField>
+                            <BookCoverField
+                                value={imageUrl}
+                                onChange={setImageUrl}
+                                onUploadingChange={setIsUploadingImage}
+                            />
 
                             <div className="flex flex-col gap-2">
                                 <Label className="font-medium text-[#464940]">Short description</Label>
@@ -274,11 +283,15 @@ export default function AddBookForm() {
                         <div className="border-t border-[#eee8dc] pt-5">
                             <Button
                                 type="submit"
-                                isDisabled={isSubmitting}
+                                isDisabled={isSubmitting || isUploadingImage}
                                 className="min-h-12 w-full rounded-full bg-[#315c4d] font-semibold text-white shadow-sm transition-colors hover:bg-[#25483c] sm:w-auto sm:min-w-48"
                             >
                                 <BookOpen aria-hidden="true" className="size-4" />
-                                {isSubmitting ? "Adding book..." : "Add book to the shelf"}
+                                {isUploadingImage
+                                    ? "Uploading cover..."
+                                    : isSubmitting
+                                        ? "Adding book..."
+                                        : "Add book to the shelf"}
                             </Button>
                         </div>
                     </form>
