@@ -80,8 +80,8 @@ const LoginForm = () => {
                         if (!/[A-Z]/.test(value)) {
                             return "Password must contain at least one uppercase letter";
                         }
-                        if (!/[0-9]/.test(value)) {
-                            return "Password must contain at least one number";
+                        if (!/[a-z]/.test(value)) {
+                            return "Password must contain at least one lowercase letter";
                         }
                         return null;
                     }}
