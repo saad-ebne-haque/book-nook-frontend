@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import ProfileEditor from "./ProfileEditor";
+import DeleteAccountDialog from "./DeleteAccountDialog";
 
 export function ProfilePageSkeleton() {
     return (
@@ -133,6 +134,16 @@ export default async function ProfilePageContent() {
                             >
                                 View my borrows
                             </Link>
+                        </div>
+
+                        <div className="mt-8 border-t border-[#eee8dc] pt-6">
+                            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9b4938]">
+                                Danger zone
+                            </p>
+                            <p className="mt-2 mb-4 text-sm leading-6 text-[#74756c]">
+                                Permanently remove your BookNook login.
+                            </p>
+                            <DeleteAccountDialog fullName={user.name} />
                         </div>
                     </section>
                 </div>
