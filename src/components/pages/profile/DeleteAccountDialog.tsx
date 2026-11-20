@@ -78,7 +78,7 @@ export default function DeleteAccountDialog({ fullName }: DeleteAccountDialogPro
                                 Delete your account?
                             </Modal.Heading>
                             <p className="mt-2 text-sm leading-6 text-[#74756c]">
-                                This permanently deletes your BookNook login and sessions. Your books and borrow records will remain unchanged and may still show your email address.
+                                This permanently deletes your BookNook login and sessions. Your uploaded ImgBB profile photo will also be deleted unless a book still uses it. Your books and borrow records remain unchanged and may still show your email address.
                             </p>
                         </Modal.Header>
 

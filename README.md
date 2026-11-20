@@ -11,6 +11,7 @@ BookNook is a small online library where readers can discover books, share title
 - Register and sign in with email/password or Google.
 - Add books with a cover image, category, description, and copy count.
 - Edit or delete books you added.
+- Remove your uploaded ImgBB profile photo on account deletion and unreferenced uploaded covers on book deletion.
 - Borrow available copies, view your active borrows, and return books.
 - Manage your profile and see availability updated as books are borrowed or returned.
 - Responsive layouts, loading states, notifications, and a custom not-found page.
@@ -44,7 +45,7 @@ Requirements: Node.js and access to a MongoDB database.
    IMGBB_API_KEY=<your-imgbb-api-key>
    ```
 
-   For production, set `NEXT_PUBLIC_API` to `https://book-nook-backend-api.vercel.app` and `BETTER_AUTH_URL` to `https://book-nook-lime.vercel.app`. Configure the frontend origin and Better Auth callback URL in Google Cloud. Keep credentials in environment settings; do not commit them.
+   For production, set `NEXT_PUBLIC_API` to `https://book-nook-backend-api.vercel.app` and `BETTER_AUTH_URL` to `https://book-nook-lime.vercel.app`. Configure the frontend origin and Better Auth callback URL in Google Cloud. Keep credentials in environment settings; do not commit them. ImgBB deletion links are stored server-side and are only used when an uploaded image is no longer referenced by a book or profile.
 
 3. Start the development server:
 

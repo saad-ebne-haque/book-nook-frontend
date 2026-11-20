@@ -1,4 +1,5 @@
-import { auth } from "@/lib/auth";
+import { auth, database } from "@/lib/auth";
+import { deleteImgBBImage, saveImgBBAsset } from "@/lib/imgbb-assets";
 
 const maxImageSize = 5 * 1024 * 1024;
 const allowedImageTypes = ["image/jpeg", "image/png", "image/webp"];
@@ -7,6 +8,7 @@ interface ImgBBResponse {
     success?: boolean;
     data?: {
         url?: string;
+        delete_url?: string;
     };
 }
 
@@ -70,9 +72,31 @@ export async function POST(request: Request) {
         return Response.json({ message: "The image host returned an invalid response." }, { status: 502 });
     }
 
-    if (!uploadResponse.ok || !result.success || !result.data?.url) {
+    if (
+        !uploadResponse.ok
+        || !result.success
+        || !result.data?.url
+        || !result.data.delete_url
+    ) {
         console.error("ImgBB did not accept the image.", uploadResponse.status);
         return Response.json({ message: "ImgBB could not upload this image." }, { status: 502 });
+    }
+
+    try {
+        await saveImgBBAsset(
+            database,
+            result.data.url,
+            result.data.delete_url,
+            session.user.email
+        );
+    } catch (error) {
+        console.error("Could not save ImgBB deletion data.", error);
+        try {
+            await deleteImgBBImage(result.data.delete_url);
+        } catch (cleanupError) {
+            console.error("Could not clean up an untracked ImgBB upload.", cleanupError);
+        }
+        return Response.json({ message: "Could not save the uploaded image." }, { status: 500 });
     }
 
     return Response.json({ url: result.data.url });
